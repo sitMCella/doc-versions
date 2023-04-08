@@ -1,0 +1,30 @@
+[package]
+name = "docversions"
+version = "0.1.0"
+authors = ["Marco Cella marco.cella.tv@gmail.com"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "docversions"
+
+[dependencies]
+actix-web = "4"
+actix-multipart = "0.6.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+git2 = "0.16.1"
+serde = { version = "1", features = ["derive"]}
+config = { version = "0.13", default-features = false, features = ["yaml"] }
+walkdir = "2"
+
+[dev-dependencies]
+reqwest = { version = "0.11", features = ["stream","multipart", "json"] }
+tokio-util = { version = "0.7.7", features = ["codec"] }
+uuid = "~0.1.1"
+rlimit = "0.9.1"
+serial_test = "1.0.0"
