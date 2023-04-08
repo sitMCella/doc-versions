@@ -40,30 +40,35 @@ cargo test  -- --nocapture
 #### Rust Code Coverage
 
 ```sh
+cd ./backend
 cargo tarpaulin --ignore-tests
 ```
 
 #### Rust Linter
 
 ```sh
+cd ./backend
 cargo clippy -- -D warnings
 ```
 
 #### Format Code (Backend)
 
 ```sh
+cd ./backend
 cargo fmt
 ```
 
 #### Build (Backend)
 
 ``` sh
+cd ./backend
 cargo build
 ```
 
 #### Build (Frontend)
 
 ``` sh
+cd ./frontend
 npm run build
 ```
 
