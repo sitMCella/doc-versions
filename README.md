@@ -5,6 +5,7 @@
 * [Introduction](#introduction)
 * [Development](#development)
     * [Setup](#setup)
+    * [Configuration](#configuration)
     * [Build project](#build-project)
 
 ## Introduction
@@ -21,6 +22,12 @@ Install React.js.
 
 Install Rust and Cargo. Recommended version:
 - Rustc and Cargo >= 1.63.0
+
+### Configuration
+
+Configure the root directory for the workspaces in 'backend/configuration.yaml'.
+
+Configure the root directory for the backed tests in 'backend/configuration_test.yaml'.
 
 ### Build project
 
