@@ -34,6 +34,7 @@ Configure the root directory for the backed tests in 'backend/configuration_test
 #### Run Unit and Integration Tests (Backend)
 
 ``` sh
+cd ./backend
 cargo test  -- --nocapture
 ```
 
