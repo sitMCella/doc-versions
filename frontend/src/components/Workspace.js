@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Alert,
     Avatar,
@@ -137,6 +137,10 @@ function Workspace (props) {
     const handleCloseDeleteWorkspaceDialog = () => {
         setOpenDeleteWorkspaceDialog(false)
     }
+
+    useEffect(() => {
+        handleWorkspaceClick()
+    }, [props.trigger])
 
     return (
         <div>

@@ -47,7 +47,7 @@ function Document () {
     const [logs, setLogs] = useState([])
     const [workspaceName, setWorkspaceName] = useState('')
     const [branchesAccordionExpanded, setBranchesAccordionExpanded] = useState(false)
-    const [triggerGitGraph, setTriggerGitGraph] = useState(0)
+    const [triggerGitGraph, setTriggerGitGraph] = useState(false)
     const [branch, setBranch] = useState('')
     const [branchLoaded, setBranchLoaded] = useState(false)
     const [trigger, setTrigger] = useState(0)
@@ -123,6 +123,7 @@ function Document () {
         setBranchLoaded(false)
         setBranch('')
         setCursor('default')
+        setTriggerGitGraph(false)
     }
 
     const updateWorkspaceLogs = (workspaceName, workspaceBranches, workspaceLogs) => {
@@ -254,7 +255,7 @@ function Document () {
 
     const fileEvent = (resetFileEditor) => {
         setTrigger((trigger) => trigger + 1)
-        setTriggerGitGraph((triggerGitGraph) => triggerGitGraph + 1)
+        setTriggerGitGraph(true)
         if(resetFileEditor === true) {
             setFile('')
             setTriggerFile((triggerFile) => triggerFile + 1)
@@ -277,7 +278,7 @@ function Document () {
                         <AccordionDetails>
                             <List>
                                 {workspaces.map(workspace =>
-                                    <Workspace name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
+                                    <Workspace trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
                                 )}
                             </List>
                             <Stack direction="row">
@@ -293,7 +294,7 @@ function Document () {
                         </AccordionSummary>
                         <AccordionDetails>
                             {
-                                workspaceLoaded && <GitGraph trigger={triggerGitGraph} branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
                             }
                         </AccordionDetails>
                     </Accordion>

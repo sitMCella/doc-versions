@@ -172,7 +172,7 @@ function GitGraph (props) {
     }, [loadComplete])
 
     return (
-        <div id="gitgraph" key={props.trigger} style={{userSelect: 'none'}}>
+        <div id="gitgraph" style={{userSelect: 'none'}}>
             <Gitgraph options={options}>{(gitGraph) => handleGitGraph(gitGraph)}</Gitgraph>
         </div>
     )
