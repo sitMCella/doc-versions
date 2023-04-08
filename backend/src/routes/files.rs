@@ -1,10 +1,10 @@
-use actix_multipart::form::MultipartForm;
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::text::Text;
+use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
-use git2::{Commit, ObjectType, Repository, Status, StatusOptions, IndexAddOption, Signature};
+use git2::{Commit, IndexAddOption, ObjectType, Repository, Signature, Status, StatusOptions};
 use std::fs;
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct FileStatus {
@@ -121,11 +121,14 @@ pub async fn create_file(
     let file_name = &path_param.2;
     match get_files_status_from_last_commit(&repository) {
         Ok(files_status) => {
-            let files_name: Vec<String> = files_status.into_iter().map(|file_status| file_status.name).collect();
+            let files_name: Vec<String> = files_status
+                .into_iter()
+                .map(|file_status| file_status.name)
+                .collect();
             if files_name.contains(&file_name) {
                 return HttpResponse::Conflict().finish();
             }
-        },
+        }
         Err(e) => {
             eprintln!(
                 "Error while retrieving the files status from the branch {}: {:#?}",
@@ -137,9 +140,7 @@ pub async fn create_file(
     let source_filepath = &form.file.file.as_ref();
     let destination_filepath = Path::new(&workspace_path).join(&file_name);
     if let Err(e) = fs::copy(&source_filepath, &destination_filepath) {
-        eprintln!(
-            "Error while creating the file: {:#?}", e
-        );
+        eprintln!("Error while creating the file: {:#?}", e);
         return HttpResponse::InternalServerError().finish();
     }
     let commit_message = form.commit_message.as_str();
@@ -180,11 +181,14 @@ pub async fn update_file(
     let file_name = &path_param.2;
     match get_files_status_from_last_commit(&repository) {
         Ok(files_status) => {
-            let files_name: Vec<String> = files_status.into_iter().map(|file_status| file_status.name).collect();
+            let files_name: Vec<String> = files_status
+                .into_iter()
+                .map(|file_status| file_status.name)
+                .collect();
             if !files_name.contains(&file_name) {
                 return HttpResponse::NotFound().finish();
             }
-        },
+        }
         Err(e) => {
             eprintln!(
                 "Error while retrieving the files status from the branch {}: {:#?}",
@@ -196,9 +200,7 @@ pub async fn update_file(
     let source_filepath = &form.file.file.as_ref();
     let destination_filepath = Path::new(&workspace_path).join(&file_name);
     if let Err(e) = fs::copy(&source_filepath, &destination_filepath) {
-        eprintln!(
-            "Error while updating the file: {:#?}", e
-        );
+        eprintln!("Error while updating the file: {:#?}", e);
         return HttpResponse::InternalServerError().finish();
     }
     let commit_message = form.commit_message.as_str();
@@ -239,11 +241,14 @@ pub async fn delete_file(
     let file_name = &path_param.2;
     match get_files_status_from_last_commit(&repository) {
         Ok(files_status) => {
-            let files_name: Vec<String> = files_status.into_iter().map(|file_status| file_status.name).collect();
+            let files_name: Vec<String> = files_status
+                .into_iter()
+                .map(|file_status| file_status.name)
+                .collect();
             if !files_name.contains(&file_name) {
                 return HttpResponse::NotFound().finish();
             }
-        },
+        }
         Err(e) => {
             eprintln!(
                 "Error while retrieving the files status from the branch {}: {:#?}",
@@ -255,19 +260,17 @@ pub async fn delete_file(
     let destination_filepath = Path::new(&workspace_path).join(&file_name);
     println!("Remove file: {:#?}", &destination_filepath);
     if let Err(e) = fs::remove_file(&destination_filepath) {
-            eprintln!(
-                "Error while deleting the file: {:#?}", e
-            );
-            return HttpResponse::InternalServerError().finish();
-        }
-        let commit_message = form.commit_message.as_str();
-        if let Err(e) = create_commit(&repository, commit_message) {
-            eprintln!(
-                "Error while creating a commit in the branch {}: {:#?}",
-                branch_name, e
-            );
-            return HttpResponse::InternalServerError().finish();
-        };
+        eprintln!("Error while deleting the file: {:#?}", e);
+        return HttpResponse::InternalServerError().finish();
+    }
+    let commit_message = form.commit_message.as_str();
+    if let Err(e) = create_commit(&repository, commit_message) {
+        eprintln!(
+            "Error while creating a commit in the branch {}: {:#?}",
+            branch_name, e
+        );
+        return HttpResponse::InternalServerError().finish();
+    };
     return HttpResponse::Ok().finish();
 }
 

@@ -361,7 +361,7 @@ function FileEditor (props) {
                     horizontal: 'right'
                 }}
                 open={fileError}
-                key={'bottom' + 'right'}
+                key={'errorMessage'}
                 autoHideDuration={5000}
                 onClose={() => setFileError(false)}
             >

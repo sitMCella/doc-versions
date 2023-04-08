@@ -1,8 +1,8 @@
 use docversions::configuration::{get_configuration, Settings};
 use docversions::startup::run;
-use git2::{Commit, ObjectType, Repository, Signature, IndexAddOption, StatusOptions};
+use git2::{Commit, IndexAddOption, ObjectType, Repository, Signature, StatusOptions};
+use reqwest::multipart;
 use reqwest::multipart::Form;
-use reqwest::{multipart};
 use rlimit::{setrlimit, Resource};
 use std::fs;
 use std::net::TcpListener;
@@ -122,7 +122,11 @@ async fn delete_file_creates_new_commit_for_repository_with_master_branch_and_ex
         panic!("Error while retrieving the last commit: {:?}", e);
     });
     cleanup(&configuration_file, &configuration, &workspace_name);
-    assert_eq!(last_commit.summary(), Some(commit_message.as_str()), "create_file should create a new commit.");
+    assert_eq!(
+        last_commit.summary(),
+        Some(commit_message.as_str()),
+        "create_file should create a new commit."
+    );
 }
 
 #[tokio::test]
@@ -173,7 +177,12 @@ fn get_workspace_name() -> String {
 }
 
 fn configure_test(workspace_name: &String) -> std::io::Result<PathBuf> {
-    assert!(setrlimit(Resource::NOFILE, ULIMIT_OPEN_FILES_SOFT, ULIMIT_OPEN_FILES_HARD).is_ok());
+    assert!(setrlimit(
+        Resource::NOFILE,
+        ULIMIT_OPEN_FILES_SOFT,
+        ULIMIT_OPEN_FILES_HARD
+    )
+    .is_ok());
     let mut configuration_file = PathBuf::from("tests_execution");
     configuration_file.push(&workspace_name);
     configuration_file.set_extension("yaml");

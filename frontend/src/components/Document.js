@@ -383,7 +383,7 @@ function Document () {
                     horizontal: 'right'
                 }}
                 open={workspaceError}
-                key={'bottom' + 'right'}
+                key={'errorMessage'}
                 autoHideDuration={5000}
                 onClose={() => setWorkspaceError(false)}
             >

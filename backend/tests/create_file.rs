@@ -1,14 +1,14 @@
 use docversions::configuration::{get_configuration, Settings};
 use docversions::startup::run;
-use git2::{Commit, ObjectType, Repository, Signature, IndexAddOption, StatusOptions};
+use git2::{Commit, IndexAddOption, ObjectType, Repository, Signature, StatusOptions};
 use reqwest::multipart::Form;
-use reqwest::{Body, multipart};
+use reqwest::{multipart, Body};
 use rlimit::{setrlimit, Resource};
-use tokio_util::codec::{BytesCodec, FramedRead};
-use tokio::fs::File;
 use std::fs;
 use std::net::TcpListener;
 use std::path::PathBuf;
+use tokio::fs::File;
+use tokio_util::codec::{BytesCodec, FramedRead};
 use uuid::Uuid;
 
 const ULIMIT_OPEN_FILES_SOFT: u64 = 16384;
@@ -34,7 +34,9 @@ async fn create_file_returns_500_for_initialized_repository() {
     file_path.push(format!("{}_README.md", &workspace_name));
     let copy_file_result = copy_test_file(&file_path);
     assert!(copy_file_result.is_ok());
-    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message).await.expect("Failed to create the multipart form.");
+    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message)
+        .await
+        .expect("Failed to create the multipart form.");
 
     let response = client
         .post(&format!(
@@ -73,7 +75,9 @@ async fn create_file_returns_200_for_repository_with_master_branch() {
     file_path.push(format!("{}_README.md", &workspace_name));
     let copy_file_result = copy_test_file(&file_path);
     assert!(copy_file_result.is_ok());
-    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message).await.expect("Failed to create the multipart form.");
+    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message)
+        .await
+        .expect("Failed to create the multipart form.");
 
     let response = client
         .post(&format!(
@@ -112,7 +116,9 @@ async fn create_file_creates_new_commit_for_repository_with_master_branch() {
     file_path.push(format!("{}_README.md", &workspace_name));
     let copy_file_result = copy_test_file(&file_path);
     assert!(copy_file_result.is_ok());
-    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message).await.expect("Failed to create the multipart form.");
+    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message)
+        .await
+        .expect("Failed to create the multipart form.");
 
     let _ = client
         .post(&format!(
@@ -128,7 +134,11 @@ async fn create_file_creates_new_commit_for_repository_with_master_branch() {
         panic!("Error while retrieving the last commit: {:?}", e);
     });
     cleanup(&configuration_file, &configuration, &workspace_name);
-    assert_eq!(last_commit.summary(), Some(commit_message.as_str()), "create_file should create a new commit.");
+    assert_eq!(
+        last_commit.summary(),
+        Some(commit_message.as_str()),
+        "create_file should create a new commit."
+    );
 }
 
 #[tokio::test]
@@ -154,7 +164,9 @@ async fn create_file_creates_new_file_for_repository_with_master_branch() {
     file_path.push(format!("{}_README.md", &workspace_name));
     let copy_file_result = copy_test_file(&file_path);
     assert!(copy_file_result.is_ok());
-    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message).await.expect("Failed to create the multipart form.");
+    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message)
+        .await
+        .expect("Failed to create the multipart form.");
 
     let _ = client
         .post(&format!(
@@ -200,7 +212,9 @@ async fn create_file_returns_409_for_repository_with_master_branch_and_already_c
     file_path.push(format!("{}_README.md", &workspace_name));
     let copy_file_result = copy_test_file(&file_path);
     assert!(copy_file_result.is_ok());
-    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message).await.expect("Failed to create the multipart form.");
+    let multipart_form = create_multipart_form(&file_path, &file_name, &commit_message)
+        .await
+        .expect("Failed to create the multipart form.");
 
     let response = client
         .post(&format!(
@@ -222,7 +236,12 @@ fn get_workspace_name() -> String {
 }
 
 fn configure_test(workspace_name: &String) -> std::io::Result<PathBuf> {
-    assert!(setrlimit(Resource::NOFILE, ULIMIT_OPEN_FILES_SOFT, ULIMIT_OPEN_FILES_HARD).is_ok());
+    assert!(setrlimit(
+        Resource::NOFILE,
+        ULIMIT_OPEN_FILES_SOFT,
+        ULIMIT_OPEN_FILES_HARD
+    )
+    .is_ok());
     let mut configuration_file = PathBuf::from("tests_execution");
     configuration_file.push(&workspace_name);
     configuration_file.set_extension("yaml");
@@ -267,7 +286,11 @@ fn create_git_repository(workspace: &PathBuf) -> Result<Repository, git2::Error>
     Repository::init(&workspace)
 }
 
-async fn create_multipart_form(file_path: &PathBuf, file_name: &String, commit_message: &String) -> Result<Form, Box<dyn std::error::Error>> {
+async fn create_multipart_form(
+    file_path: &PathBuf,
+    file_name: &String,
+    commit_message: &String,
+) -> Result<Form, Box<dyn std::error::Error>> {
     let file_name = file_name.clone();
     let commit_message = commit_message.clone();
     match File::open(&file_path).await {
@@ -276,17 +299,18 @@ async fn create_multipart_form(file_path: &PathBuf, file_name: &String, commit_m
             let file_body = Body::wrap_stream(stream);
             match multipart::Part::stream(file_body)
                 .file_name(file_name)
-                .mime_str("text/plain") {
-                    Ok(part) => {
-                        let form = multipart::Form::new()
-                            .text("commit_message", commit_message)
-                            .part("file", part);
-                        return Ok(form);
-                    },
-                    Err(e) => return Err(Box::new(e))
+                .mime_str("text/plain")
+            {
+                Ok(part) => {
+                    let form = multipart::Form::new()
+                        .text("commit_message", commit_message)
+                        .part("file", part);
+                    return Ok(form);
                 }
-        },
-        Err(e) => return Err(Box::new(e))
+                Err(e) => return Err(Box::new(e)),
+            }
+        }
+        Err(e) => return Err(Box::new(e)),
     }
 }
 

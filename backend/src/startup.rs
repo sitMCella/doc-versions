@@ -1,7 +1,8 @@
 use crate::configuration::Settings;
 use crate::routes::{
-    create_branches, create_workspace, delete_file, delete_workspace, get_branch_logs, health_check, retrieve_workspaces,
-    retrieve_branches, retrieve_file_content, retrieve_files_status, create_file, update_file, set_current_branch,
+    create_branches, create_file, create_workspace, delete_file, delete_workspace, get_branch_logs,
+    health_check, retrieve_branches, retrieve_file_content, retrieve_files_status,
+    retrieve_workspaces, set_current_branch, update_file,
 };
 use actix_web::dev::Server;
 use actix_web::web::ServiceConfig;
@@ -35,10 +36,7 @@ fn config_app(workspace_path: String) -> Box<dyn Fn(&mut ServiceConfig)> {
     Box::new(move |cfg: &mut ServiceConfig| {
         cfg.app_data(web::Data::new(workspace_path.clone()))
             .service(web::resource("/health_check").route(web::get().to(health_check)))
-            .service(
-                web::resource("/workspaces")
-                    .route(web::get().to(retrieve_workspaces)),
-            )
+            .service(web::resource("/workspaces").route(web::get().to(retrieve_workspaces)))
             .service(
                 web::resource("/workspaces/{workspace_name}")
                     .route(web::post().to(create_workspace))

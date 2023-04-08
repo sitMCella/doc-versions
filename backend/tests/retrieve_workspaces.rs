@@ -1,11 +1,11 @@
 use docversions::configuration::{get_configuration, Settings};
 use docversions::startup::run;
 use git2::{Repository, Signature};
+use serial_test::serial;
 use std::fs;
 use std::net::TcpListener;
 use std::path::PathBuf;
 use uuid::Uuid;
-use serial_test::serial;
 
 #[tokio::test]
 #[serial]

@@ -1,25 +1,24 @@
 use actix_web::{web, HttpResponse};
 use git2::{Commit, IndexAddOption, ObjectType, Repository, Signature};
-use std::{fs, path::{PathBuf}};
+use std::{fs, path::PathBuf};
 
 // curl -X GET -v http://127.0.0.1:8000/workspaces
-pub async fn retrieve_workspaces(
-    workspace_path: web::Data<String>,
-) -> HttpResponse {
+pub async fn retrieve_workspaces(workspace_path: web::Data<String>) -> HttpResponse {
     let workspace_directory = PathBuf::from(&workspace_path.as_str());
     let mut vec: Vec<String> = Vec::new();
     match fs::read_dir(workspace_directory) {
-        Ok(a) => a.map(|res| res.map(|e| e.path())).filter_map(Result::ok).filter(|f| f.is_dir())
-            .for_each(|f| {
-                match f.file_name() {
-                    Some(n) => {
-                        let p = n.clone().to_owned();
-                        vec.push(p.into_string().unwrap());
-                    },
-                    None => {}
+        Ok(a) => a
+            .map(|res| res.map(|e| e.path()))
+            .filter_map(Result::ok)
+            .filter(|f| f.is_dir())
+            .for_each(|f| match f.file_name() {
+                Some(n) => {
+                    let p = n.clone().to_owned();
+                    vec.push(p.into_string().unwrap());
                 }
+                None => {}
             }),
-        Err(_) => return HttpResponse::InternalServerError().finish()
+        Err(_) => return HttpResponse::InternalServerError().finish(),
     };
     HttpResponse::Ok().json(vec)
 }

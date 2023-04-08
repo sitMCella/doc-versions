@@ -1,6 +1,6 @@
 use docversions::configuration::{get_configuration, Settings};
 use docversions::startup::run;
-use git2::{Commit, ObjectType, Repository, Signature, IndexAddOption};
+use git2::{Commit, IndexAddOption, ObjectType, Repository, Signature};
 use std::fs;
 use std::net::TcpListener;
 use std::path::PathBuf;
@@ -35,7 +35,8 @@ async fn retrieve_files_status_returns_500_for_initialized_repository() {
 }
 
 #[tokio::test]
-async fn retrieve_files_status_on_master_branch_returns_200_for_repository_with_master_branch_and_no_files() {
+async fn retrieve_files_status_on_master_branch_returns_200_for_repository_with_master_branch_and_no_files(
+) {
     let workspace_name = get_workspace_name();
     let configuration_file = configure_test(&workspace_name).unwrap_or_else(|error| {
         panic!("Error while configuring the test: {:?}.", error);
