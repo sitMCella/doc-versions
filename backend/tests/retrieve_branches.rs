@@ -22,7 +22,7 @@ async fn retrieve_branches_returns_200_for_initialized_repository() {
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches",
+            "{}/api/workspaces/{}/branches",
             &address, &workspace_name
         ))
         .send()
@@ -49,7 +49,7 @@ async fn retrieve_branches_returns_empty_vect_as_body_for_initialized_repository
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches",
+            "{}/api/workspaces/{}/branches",
             &address, &workspace_name
         ))
         .send()
@@ -86,7 +86,7 @@ async fn retrieve_branches_returns_200_for_repository_with_master_branch() {
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches",
+            "{}/api/workspaces/{}/branches",
             &address, &workspace_name
         ))
         .send()
@@ -117,7 +117,7 @@ async fn retrieve_branches_returns_master_branch_for_repository_with_master_bran
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches",
+            "{}/api/workspaces/{}/branches",
             &address, &workspace_name
         ))
         .send()

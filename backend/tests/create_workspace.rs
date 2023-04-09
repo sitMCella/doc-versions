@@ -19,7 +19,7 @@ async fn create_workspace_returns_200_on_new_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .post(&format!("{}/workspaces/{}", &address, &workspace_name))
+        .post(&format!("{}/api/workspaces/{}", &address, &workspace_name))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -46,7 +46,7 @@ async fn create_workspace_returns_409_on_already_existing_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .post(&format!("{}/workspaces/{}", &address, &workspace_name))
+        .post(&format!("{}/api/workspaces/{}", &address, &workspace_name))
         .send()
         .await
         .expect("Failed to execute request.");

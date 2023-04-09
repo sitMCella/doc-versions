@@ -14,7 +14,7 @@ function FileTree (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + props.branchName + '/files', {
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + props.branchName + '/files', {
             method: 'GET',
             headers: headers,
             signal

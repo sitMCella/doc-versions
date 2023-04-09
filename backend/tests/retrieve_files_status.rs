@@ -23,7 +23,7 @@ async fn retrieve_files_status_returns_500_for_initialized_repository() {
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files",
+            "{}/api/workspaces/{}/branches/{}/files",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -55,7 +55,7 @@ async fn retrieve_files_status_on_master_branch_returns_200_for_repository_with_
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files",
+            "{}/api/workspaces/{}/branches/{}/files",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -89,7 +89,7 @@ async fn retrieve_files_status_on_master_branch_returns_empty_file_status_vector
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files",
+            "{}/api/workspaces/{}/branches/{}/files",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -134,7 +134,7 @@ async fn retrieve_files_status_on_master_branch_returns_file_status_vector_with_
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files",
+            "{}/api/workspaces/{}/branches/{}/files",
             &address, &workspace_name, &branch_name
         ))
         .send()

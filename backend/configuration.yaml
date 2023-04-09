@@ -1,2 +1,2 @@
 application_port: 8000
-workspaces_path: "/Users/marcocella/projects/rust/git-workspace-prod"
+workspaces_path: "/app/git-workspace"

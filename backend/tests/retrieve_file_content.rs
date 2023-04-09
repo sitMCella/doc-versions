@@ -24,7 +24,7 @@ async fn retrieve_files_content_returns_500_for_initialized_repository() {
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .send()
@@ -63,7 +63,7 @@ async fn retrieve_file_content_on_master_branch_returns_200_for_repository_with_
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .send()
@@ -102,7 +102,7 @@ async fn retrieve_file_content_on_master_branch_returns_file_content_for_reposit
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .send()

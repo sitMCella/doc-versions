@@ -23,7 +23,7 @@ async fn retrieve_logs_returns_500_for_initialized_repository() {
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/logs",
+            "{}/api/workspaces/{}/branches/{}/logs",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -54,7 +54,7 @@ async fn retrieve_logs_on_master_branch_returns_200_for_repository_with_master_b
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/logs",
+            "{}/api/workspaces/{}/branches/{}/logs",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -88,7 +88,7 @@ async fn retrieve_logs_on_master_branch_returns_list_of_commits_for_repository_w
 
     let response = client
         .get(&format!(
-            "{}/workspaces/{}/branches/{}/logs",
+            "{}/api/workspaces/{}/branches/{}/logs",
             &address, &workspace_name, &branch_name
         ))
         .send()

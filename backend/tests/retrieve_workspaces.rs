@@ -20,7 +20,7 @@ async fn retrieve_workspace_returns_200_on_no_workspaces() {
     let client = reqwest::Client::new();
 
     let response = client
-        .get(&format!("{}/workspaces", &address))
+        .get(&format!("{}/api/workspaces", &address))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -42,7 +42,7 @@ async fn retrieve_workspace_returns_empty_vector_on_no_workspaces() {
     let client = reqwest::Client::new();
 
     let response = client
-        .get(&format!("{}/workspaces", &address))
+        .get(&format!("{}/api/workspaces", &address))
         .send()
         .await
         .expect("Failed to execute request.")
@@ -77,7 +77,7 @@ async fn retrieve_workspace_returns_200_on_one_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .get(&format!("{}/workspaces", &address))
+        .get(&format!("{}/api/workspaces", &address))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -105,7 +105,7 @@ async fn retrieve_workspace_returns_vector_with_one_element_on_one_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .get(&format!("{}/workspaces", &address))
+        .get(&format!("{}/api/workspaces", &address))
         .send()
         .await
         .expect("Failed to execute request.")

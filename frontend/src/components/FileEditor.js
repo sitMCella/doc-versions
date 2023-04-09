@@ -35,7 +35,7 @@ function FileEditor (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, {
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, {
             method: 'GET',
             headers: headers,
             signal
@@ -112,7 +112,7 @@ function FileEditor (props) {
             body: data
         }
         delete options.headers['Content-Type']
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
         if (!response.ok) {
             throw new Error(JSON.stringify(response))
         }
@@ -131,7 +131,7 @@ function FileEditor (props) {
             body: data
         }
         delete options.headers['Content-Type']
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
         if (!response.ok) {
             throw new Error(JSON.stringify(response))
         }
@@ -141,7 +141,7 @@ function FileEditor (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + branchName, {
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName, {
             method: 'POST',
             headers: headers,
             signal
@@ -238,7 +238,7 @@ function FileEditor (props) {
             body: data
         }
         delete options.headers['Content-Type']
-        const response = await fetch('/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
+        const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, options)
         if (!response.ok) {
             throw new Error(JSON.stringify(response))
         }

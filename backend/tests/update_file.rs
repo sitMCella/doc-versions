@@ -40,7 +40,7 @@ async fn update_file_returns_500_for_initialized_repository() {
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -81,7 +81,7 @@ async fn update_file_returns_404_for_repository_with_master_branch_and_non_exist
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -126,7 +126,7 @@ async fn update_file_returns_200_for_repository_with_master_branch_and_already_c
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -172,7 +172,7 @@ async fn update_file_creates_new_commit_for_repository_with_master_branch_and_al
 
     let _ = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -224,7 +224,7 @@ async fn update_file_creates_new_file_for_repository_with_master_branch_and_alre
 
     let _ = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)

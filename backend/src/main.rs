@@ -10,7 +10,7 @@ async fn main() -> std::io::Result<()> {
         get_configuration(&configuration_file_name).expect("Failed to read configuration.");
     println!("{}", &configuration.workspaces_path);
 
-    let address = format!("127.0.0.1:{}", configuration.application_port);
+    let address = format!("0.0.0.0:{}", configuration.application_port);
     let listener = TcpListener::bind(address).expect("Failed to bind port");
     run(listener, &configuration)?.await
 }
