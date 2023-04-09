@@ -1,6 +1,6 @@
 # Document Versions
 
-![Document](https://github.com/sitMCella/doc-versions/wiki/images/Cards1.png)
+![Document](https://github.com/sitMCella/doc-versions/wiki/images/Document.png)
 
 ## Table of contents
 
