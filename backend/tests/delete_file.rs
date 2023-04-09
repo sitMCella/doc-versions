@@ -32,7 +32,7 @@ async fn delete_file_returns_500_for_initialized_repository() {
 
     let response = client
         .delete(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -71,7 +71,7 @@ async fn delete_file_returns_200_for_repository_with_master_branch_and_existent_
 
     let response = client
         .delete(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -110,7 +110,7 @@ async fn delete_file_creates_new_commit_for_repository_with_master_branch_and_ex
 
     let _ = client
         .delete(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)
@@ -156,7 +156,7 @@ async fn delete_file_deletes_file_for_repository_with_master_branch_and_existent
 
     let _ = client
         .delete(&format!(
-            "{}/workspaces/{}/branches/{}/files/{}",
+            "{}/api/workspaces/{}/branches/{}/files/{}",
             &address, &workspace_name, &branch_name, &file_name
         ))
         .multipart(multipart_form)

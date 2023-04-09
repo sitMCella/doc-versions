@@ -35,33 +35,33 @@ fn create_workspaces_directory(configuration: &Settings) -> Result<(), std::io::
 fn config_app(workspace_path: String) -> Box<dyn Fn(&mut ServiceConfig)> {
     Box::new(move |cfg: &mut ServiceConfig| {
         cfg.app_data(web::Data::new(workspace_path.clone()))
-            .service(web::resource("/health_check").route(web::get().to(health_check)))
-            .service(web::resource("/workspaces").route(web::get().to(retrieve_workspaces)))
+            .service(web::resource("/api/health_check").route(web::get().to(health_check)))
+            .service(web::resource("/api/workspaces").route(web::get().to(retrieve_workspaces)))
             .service(
-                web::resource("/workspaces/{workspace_name}")
+                web::resource("/api/workspaces/{workspace_name}")
                     .route(web::post().to(create_workspace))
                     .route(web::delete().to(delete_workspace)),
             )
             .service(
-                web::resource("/workspaces/{workspace_name}/branches")
+                web::resource("/api/workspaces/{workspace_name}/branches")
                     .route(web::get().to(retrieve_branches)),
             )
             .service(
-                web::resource("/workspaces/{workspace_name}/branches/{branch_name}")
+                web::resource("/api/workspaces/{workspace_name}/branches/{branch_name}")
                     .route(web::post().to(create_branches))
                     .route(web::put().to(set_current_branch)),
             )
             .service(
-                web::resource("/workspaces/{workspace_name}/branches/{branch_name}/logs")
+                web::resource("/api/workspaces/{workspace_name}/branches/{branch_name}/logs")
                     .route(web::get().to(get_branch_logs)),
             )
             .service(
-                web::resource("/workspaces/{workspace_name}/branches/{branch_name}/files")
+                web::resource("/api/workspaces/{workspace_name}/branches/{branch_name}/files")
                     .route(web::get().to(retrieve_files_status)),
             )
             .service(
                 web::resource(
-                    "/workspaces/{workspace_name}/branches/{branch_name}/files/{file_name}",
+                    "/api/workspaces/{workspace_name}/branches/{branch_name}/files/{file_name}",
                 )
                 .route(web::get().to(retrieve_file_content))
                 .route(web::post().to(create_file))

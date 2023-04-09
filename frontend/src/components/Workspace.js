@@ -29,7 +29,7 @@ function Workspace (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.name + '/branches', {
+        const response = await fetch('/api/workspaces/' + props.name + '/branches', {
             method: 'GET',
             headers: headers,
             signal
@@ -51,7 +51,7 @@ function Workspace (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.name + '/branches/' + branchName + '/logs', {
+        const response = await fetch('/api/workspaces/' + props.name + '/branches/' + branchName + '/logs', {
             method: 'GET',
             headers: headers
         })
@@ -108,7 +108,7 @@ function Workspace (props) {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + props.name, {
+        const response = await fetch('/api/workspaces/' + props.name, {
             method: 'DELETE',
             headers: headers
         })

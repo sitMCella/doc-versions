@@ -23,7 +23,7 @@ async fn change_branch_returns_500_for_initialized_repository() {
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -54,7 +54,7 @@ async fn change_branch_to_non_existent_branch_returns_500_for_repository_with_ma
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -86,7 +86,7 @@ async fn change_branch_to_master_branch_returns_200_for_repository_with_master_b
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address,
             &workspace_name,
             "master".to_string()
@@ -123,7 +123,7 @@ async fn change_branch_to_existent_branch_returns_200() {
 
     let response = client
         .put(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()

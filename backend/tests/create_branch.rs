@@ -23,7 +23,7 @@ async fn create_branch_returns_500_for_initialized_repository() {
 
     let response = client
         .post(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -54,7 +54,7 @@ async fn create_branch_returns_200_for_repository_with_master_branch() {
 
     let response = client
         .post(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()
@@ -87,7 +87,7 @@ async fn create_branch_sets_head_to_last_commit_for_repository_with_master_branc
 
     client
         .post(&format!(
-            "{}/workspaces/{}/branches/{}",
+            "{}/api/workspaces/{}/branches/{}",
             &address, &workspace_name, &branch_name
         ))
         .send()

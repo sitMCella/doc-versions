@@ -24,7 +24,7 @@ async fn delete_workspace_returns_200_on_existing_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .delete(&format!("{}/workspaces/{}", &address, &workspace_name))
+        .delete(&format!("{}/api/workspaces/{}", &address, &workspace_name))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -46,7 +46,7 @@ async fn delete_workspace_returns_404_on_non_existing_workspace() {
     let client = reqwest::Client::new();
 
     let response = client
-        .delete(&format!("{}/workspaces/{}", &address, &workspace_name))
+        .delete(&format!("{}/api/workspaces/{}", &address, &workspace_name))
         .send()
         .await
         .expect("Failed to execute request.");

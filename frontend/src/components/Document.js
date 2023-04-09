@@ -100,7 +100,7 @@ function Document () {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces', {
+        const response = await fetch('/api/workspaces', {
             method: 'GET',
             headers: headers,
             signal
@@ -193,7 +193,7 @@ function Document () {
         const headers = {
             Accepted: 'application/json'
         }
-        const response = await fetch('/workspaces/' + newWorkspaceName, {
+        const response = await fetch('/api/workspaces/' + newWorkspaceName, {
             method: 'POST',
             headers: headers
         })

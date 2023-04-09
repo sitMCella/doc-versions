@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  backend:
+    image: "doc-versions/backend"
+    build:
+      context: backend
+      dockerfile: "Dockerfile"
+    container_name: "backend"
+    ports:
+      - "8000:8000"
+    volumes:
+      - git_workspace:/app/git-workspace
+  frontend:
+    image: "doc-versions/frontend"
+    build:
+      context: frontend
+      dockerfile: "Dockerfile"
+    container_name: "frontend"
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+volumes:
+  git_workspace:
+    external: false
