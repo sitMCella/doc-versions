@@ -19,6 +19,8 @@
 Document Versions is a web application that manages the versions of text documents via Git.
 In the current version of the application, the files are stored in the local environment.
 
+Read the [documentation](https://github.com/sitMCella/doc-versions/wiki) in order to discover the features of Document Versions.
+
 ## Development
 
 Document Versions is a web application built using the Rust language on the backend, and React JS framework on the frontend.
