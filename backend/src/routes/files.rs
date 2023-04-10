@@ -297,6 +297,10 @@ fn set_branch(repository: &Repository, branch_name: &String) -> Result<(), git2:
         Some(gref) => repository.set_head(gref.name().unwrap())?,
         None => repository.set_head_detached(object.id())?,
     };
+    repository.checkout_head(Some(
+        git2::build::CheckoutBuilder::default()
+        .remove_untracked(true).remove_ignored(true).force(),
+    ))?;
     Ok(())
 }
 
