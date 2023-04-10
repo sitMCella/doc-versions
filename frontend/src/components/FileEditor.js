@@ -281,7 +281,7 @@ function FileEditor (props) {
 
     return (
         <div className="content">
-            <Card>
+            <Card sx={{ width: '75%' }}>
                 <CardContent>
                     <Stack direction="row">
                         <Typography variant="h7" color="text.secondary" gutterBottom>{props.fileName}</Typography>
