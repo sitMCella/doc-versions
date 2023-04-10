@@ -171,6 +171,7 @@ function Document () {
         document.addEventListener('mousemove', e => handleMouseMove(e))
         document.addEventListener('mouseup', e => handleMouseUp(e))
         document.addEventListener('mousedown', e => handleMouseDown(e))
+        document.title = 'Document Versions';
         getWorkspaces(signal)
             .then(() => setWorkspaceError(false))
             .catch((err) => {
