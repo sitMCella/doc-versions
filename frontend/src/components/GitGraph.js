@@ -21,7 +21,7 @@ function GitGraph (props) {
                 },
                 message: {
                     displayAuthor: false,
-                    displayHash: true,
+                    displayHash: false,
                     font: "normal 13pt Arial"
                 }
             }
