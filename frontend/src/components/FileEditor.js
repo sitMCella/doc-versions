@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Editor, EditorState, convertFromRaw} from 'draft-js'
 import Card from '@mui/material/Card'
 import 'draft-js/dist/Draft.css'
@@ -13,11 +13,15 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
     Snackbar,
     Stack,
     TextField,
     Typography
-} from "@mui/material";
+} from "@mui/material"
 
 function FileEditor (props) {
     const [fileError, setFileError] = useState(false)
@@ -30,6 +34,17 @@ function FileEditor (props) {
     const [openDeleteFileDialog, setDeleteSaveFileDialog] = useState(false)
     const [editorSaveButtonDisabled, setEditorSaveButtonDisabled] = useState(true)
     const [editorDeleteButtonDisabled, setEditorDeleteButtonDisabled] = useState(true)
+    const [fontFamily, setFontFamily] = useState('Georgia')
+    const [fontSize, setFontSize] = useState('14')
+    const editorRef = useRef(null)
+
+    const fontFamilies = [
+        "Arial", "Arial Black", "Times New Roman", "Helvetica", "Verdana", "Tahoma", "Trebuchet MS", "Impact", "Gill Sans", "Georgia",
+        "Palatino", "Baskerville", "Andalé Mono", "Courier", "Lucida Console", "Monaco", "Bradley Hand", "Brush Script MT", "Luminari",
+        "Comic Sans MS", "Optima", "Didot", "American Typewriter"
+    ]
+
+    const fontSizes = ["9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "20", "22", "24", "36", "48", "64"]
 
     const getFile = async (branchName, fileName, signal) => {
         const headers = {
@@ -66,6 +81,7 @@ function FileEditor (props) {
         setBranchName(props.branchName)
         setFileName(props.fileName)
         if (props.trigger) {
+            editorRef.current.focus()
             if (props.isNewFile === true) {
                 setEditorDeleteButtonDisabled(true)
                 setEditorSaveButtonDisabled(false)
@@ -279,6 +295,14 @@ function FileEditor (props) {
         }
     }
 
+    const handleChangeFontFamily = (e) => {
+        setFontFamily(e.target.value)
+    }
+
+    const handleChangeFontSize = (e) => {
+        setFontSize(e.target.value)
+    }
+
     return (
         <div className="content">
             <Card sx={{ width: '75%' }}>
@@ -287,13 +311,44 @@ function FileEditor (props) {
                         <Typography variant="h7" color="text.secondary" gutterBottom>{props.fileName}</Typography>
                     </Stack>
                     <div className="RichEditor-root">
-                        <div className="RichEditor-editor">
+                            <Stack direction="row">
+                                <FormControl sx={{width: '25ch'}}>
+                                <InputLabel id="font-family-select-label">Font Family</InputLabel>
+                                <Select
+                                    labelId="font-family-select-label"
+                                    id="font-family-select"
+                                    value={fontFamily}
+                                    label="Font Family"
+                                    onChange={handleChangeFontFamily}
+                                >
+                                    {fontFamilies.map(font =>
+                                        <MenuItem value={font}>{font}</MenuItem>
+                                    )}
+                                </Select>
+                                </FormControl>
+                                <FormControl sx={{width: '15ch'}}>
+                                <InputLabel id="font-size-select-label">Font Size</InputLabel>
+                                <Select
+                                    labelId="font-size-select-label"
+                                    id="font-size-select"
+                                    value={fontSize}
+                                    label="Font Size"
+                                    onChange={handleChangeFontSize}
+                                >
+                                    {fontSizes.map(font =>
+                                        <MenuItem value={font}>{font}</MenuItem>
+                                    )}
+                                </Select>
+                                </FormControl>
+                            </Stack>
+                        <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>
                             <Editor
                                     editorState={editorState}
                                     onChange={setEditorState}
                                     wrapperClassName="wrapper-class"
                                     editorClassName="editor-class"
                                     toolbarClassName="toolbar-class"
+                                    ref={editorRef}
                                 />
                             </div>
                     </div>
