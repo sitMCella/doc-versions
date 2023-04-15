@@ -134,8 +134,8 @@ function Workspace (props) {
             >
                 <ListItem
                     secondaryAction={
-                        <IconButton edge="end" aria-label="delete">
-                            <DeleteIcon onClick={handleDeleteWorkspaceDialogClick} />
+                        <IconButton edge="end" aria-label="delete" onClick={handleDeleteWorkspaceDialogClick}>
+                            <DeleteIcon />
                         </IconButton>
                     }
                 >

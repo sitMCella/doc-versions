@@ -54,7 +54,7 @@ function FileTree (props) {
                 aria-label="file system navigator"
                 defaultCollapseIcon={<ExpandMoreIcon />}
                 defaultExpandIcon={<ChevronRightIcon />}
-                sx={{ flexGrow: 1, maxWidth: 400, position: 'relative', alignItems: 'left', align: 'left'}}
+                sx={{ flexGrow: 1, maxWidth: 400, position: 'relative', alignItems: 'left', align: 'left', userSelect: 'none'}}
             >
                 {files.map(file =>
                     <TreeItem key={file.name} nodeId={file.name} label={file.name} onClick={() => props.handleSelectFile(file.name)} sx={{ textAlign: 'left' }} />

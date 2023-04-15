@@ -1,8 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Editor, EditorState, convertFromRaw} from 'draft-js'
+import {Editor, EditorState, convertFromRaw, convertToRaw} from 'draft-js'
+import { Editor as EditorWysiwyg} from "react-draft-wysiwyg"
 import Card from '@mui/material/Card'
 import 'draft-js/dist/Draft.css'
-import "./DraftEditor.css"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
+import "./FileEditor.css"
 import {Alert, Button, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
 
 function FileEditor (props) {
@@ -19,6 +21,7 @@ function FileEditor (props) {
     const [fontFamily, setFontFamily] = useState('Georgia')
     const [fontSize, setFontSize] = useState('14')
     const editorRef = useRef(null)
+    const [rtfFile, setRtfFile] = useState(false)
 
     const fontFamilies = [
         "Arial", "Arial Black", "Times New Roman", "Helvetica", "Verdana", "Tahoma", "Trebuchet MS", "Impact", "Gill Sans", "Georgia",
@@ -27,6 +30,23 @@ function FileEditor (props) {
     ]
 
     const fontSizes = ["9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "20", "22", "24", "36", "48", "64"]
+
+    const createEditorSimpleTextFile = (text) => {
+        return convertFromRaw({
+            blocks: [
+                {
+                    key: "3eesq",
+                    text: text,
+                    type: "unstyled",
+                    depth: 0,
+                    inlineStyleRanges: [],
+                    entityRanges: [],
+                    data: {},
+                },
+            ],
+            entityMap: {},
+        })
+    }
 
     const getFile = async (branchName, fileName, signal) => {
         const headers = {
@@ -42,28 +62,19 @@ function FileEditor (props) {
         }
         const responseData = await response.blob()
         const loadedFile = await responseData.text()
-        const newEditorState = convertFromRaw({
-            blocks: [
-                {
-                    key: "3eesq",
-                    text: loadedFile,
-                    type: "unstyled",
-                    depth: 0,
-                    inlineStyleRanges: [],
-                    entityRanges: [],
-                    data: {},
-                },
-            ],
-            entityMap: {},
-        })
+        const isRtfFile = fileName.endsWith(".rtf")
+        const newEditorState = isRtfFile ? convertFromRaw(JSON.parse(loadedFile)) : createEditorSimpleTextFile(loadedFile)
         setEditorState(EditorState.createWithContent(newEditorState))
     }
 
     useEffect(() => {
         setBranchName(props.branchName)
         setFileName(props.fileName)
+        setRtfFile(props.fileName.endsWith(".rtf"))
         if (props.trigger) {
-            editorRef.current.focus()
+            if(editorRef !== null && editorRef.current !== null && editorRef.current.focus !== undefined) {
+                editorRef.current.focus()
+            }
             if (props.isNewFile === true) {
                 setEditorDeleteButtonDisabled(true)
                 setEditorSaveButtonDisabled(false)
@@ -101,8 +112,10 @@ function FileEditor (props) {
         const headers = {
             'Content-Type': 'multipart/form-data'
         }
+        console.log(convertToRaw(editorState.getCurrentContent()))
+        const text = rtfFile ? JSON.stringify(convertToRaw(editorState.getCurrentContent())) : editorState.getCurrentContent().getPlainText()
         const data = new FormData()
-        data.append('file', editorState.getCurrentContent().getPlainText())
+        data.append('file', text)
         data.append('commit_message', commitMessage)
         const options = {
             method: 'POST',
@@ -120,8 +133,9 @@ function FileEditor (props) {
         const headers = {
             'Content-Type': 'multipart/form-data'
         }
+        const text = rtfFile ? JSON.stringify(convertToRaw(editorState.getCurrentContent())) : editorState.getCurrentContent().getPlainText()
         const data = new FormData()
-        data.append('file', editorState.getCurrentContent().getPlainText())
+        data.append('file', text)
         data.append('commit_message', commitMessage)
         const options = {
             method: 'PUT',
@@ -289,42 +303,43 @@ function FileEditor (props) {
         <div className="content">
             <Card sx={{ width: '75%' }}>
                 <CardContent>
-                    <Stack direction="row">
+                    <Stack direction="row" style={{userSelect: 'none'}}>
                         <Typography variant="h7" color="text.secondary" gutterBottom>{props.fileName}</Typography>
                     </Stack>
-                    <div className="RichEditor-root">
-                        <Stack direction="row">
-                            <FormControl sx={{width: '25ch'}}>
-                            <InputLabel id="font-family-select-label">Font Family</InputLabel>
-                            <Select
-                                labelId="font-family-select-label"
-                                id="font-family-select"
-                                value={fontFamily}
-                                label="Font Family"
-                                onChange={handleChangeFontFamily}
-                            >
-                                {fontFamilies.map(font =>
-                                    <MenuItem value={font}>{font}</MenuItem>
-                                )}
-                            </Select>
-                            </FormControl>
-                            <FormControl sx={{width: '15ch'}}>
-                            <InputLabel id="font-size-select-label">Font Size</InputLabel>
-                            <Select
-                                labelId="font-size-select-label"
-                                id="font-size-select"
-                                value={fontSize}
-                                label="Font Size"
-                                onChange={handleChangeFontSize}
-                            >
-                                {fontSizes.map(font =>
-                                    <MenuItem value={font}>{font}</MenuItem>
-                                )}
-                            </Select>
-                            </FormControl>
-                        </Stack>
-                        <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>
-                            <Editor
+                    { !rtfFile &&
+                        <div className="RichEditor-root">
+                            <Stack direction="row">
+                                <FormControl sx={{width: '25ch'}}>
+                                <InputLabel id="font-family-select-label">Font Family</InputLabel>
+                                <Select
+                                    labelId="font-family-select-label"
+                                    id="font-family-select"
+                                    value={fontFamily}
+                                    label="Font Family"
+                                    onChange={handleChangeFontFamily}
+                                >
+                                    {fontFamilies.map(font =>
+                                        <MenuItem value={font}>{font}</MenuItem>
+                                    )}
+                                </Select>
+                                </FormControl>
+                                <FormControl sx={{width: '15ch'}}>
+                                <InputLabel id="font-size-select-label">Font Size</InputLabel>
+                                <Select
+                                    labelId="font-size-select-label"
+                                    id="font-size-select"
+                                    value={fontSize}
+                                    label="Font Size"
+                                    onChange={handleChangeFontSize}
+                                >
+                                    {fontSizes.map(font =>
+                                        <MenuItem value={font}>{font}</MenuItem>
+                                    )}
+                                </Select>
+                                </FormControl>
+                            </Stack>
+                            <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>
+                                <Editor
                                     editorState={editorState}
                                     onChange={setEditorState}
                                     wrapperClassName="wrapper-class"
@@ -333,7 +348,18 @@ function FileEditor (props) {
                                     ref={editorRef}
                                 />
                             </div>
-                    </div>
+                        </div>
+                    }
+                    { rtfFile &&
+                        <EditorWysiwyg
+                            editorState={editorState}
+                            onEditorStateChange={setEditorState}
+                            wrapperClassName="wrapper-class"
+                            editorClassName="editor-class"
+                            toolbarClassName="toolbar-class"
+                            ref={editorRef}
+                        />
+                    }
                 </CardContent>
                 <CardActions>
                     <Stack direction="row">
