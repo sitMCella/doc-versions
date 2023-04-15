@@ -36,7 +36,7 @@ function FileEditor (props) {
             blocks: [
                 {
                     key: "3eesq",
-                    text: text,
+                    text,
                     type: "unstyled",
                     depth: 0,
                     inlineStyleRanges: [],
@@ -54,7 +54,7 @@ function FileEditor (props) {
         }
         const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -120,7 +120,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'POST',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -140,7 +140,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -156,7 +156,7 @@ function FileEditor (props) {
         }
         const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName, {
             method: 'POST',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -247,7 +247,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'DELETE',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -339,7 +339,7 @@ function FileEditor (props) {
                                     </Select>
                                 </FormControl>
                             </Stack>
-                            <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>
+                            <div className="RichEditor-editor" style={{fontFamily, fontSize: fontSize + 'px'}}>
                                 <Editor
                                     editorState={editorState}
                                     onChange={setEditorState}

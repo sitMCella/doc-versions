@@ -18,7 +18,7 @@ function Workspace (props) {
         }
         const response = await fetch('/api/workspaces/' + props.name + '/branches', {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -40,7 +40,7 @@ function Workspace (props) {
         }
         const response = await fetch('/api/workspaces/' + props.name + '/branches/' + branchName + '/logs', {
             method: 'GET',
-            headers: headers
+            headers
         })
         if (!response.ok) {
             throw new Error(JSON.stringify(response))
@@ -97,7 +97,7 @@ function Workspace (props) {
         }
         const response = await fetch('/api/workspaces/' + props.name, {
             method: 'DELETE',
-            headers: headers
+            headers
         })
         if (!response.ok) {
             throw new Error(JSON.stringify(response))

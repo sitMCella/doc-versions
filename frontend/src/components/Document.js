@@ -1,26 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Alert,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Divider,
-    Drawer, FormControl,
-    InputLabel,
-    List,
-    MenuItem,
-    Select,
-    Snackbar,
-    Stack,
-    TextField,
-    Typography
-} from "@mui/material"
+import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Workspace from "./Workspace";
 import GitGraph from "./GitGraph";
@@ -71,7 +50,7 @@ function Document () {
 
     // eslint-disable-next-line
     const [leftDrawerWidth, setLeftDrawerWidth, refLeftDrawerWidth] = useStateRef(defaultLeftDrawerWidth)
-    let isResizingLeftDrawer = useRef(0)
+    const isResizingLeftDrawer = useRef(0)
     // eslint-disable-next-line
     const [cursor, setCursor, refCursor] = useStateRef('default')
 
@@ -81,7 +60,7 @@ function Document () {
 
     // eslint-disable-next-line
     const [rightDrawerWidth, setRightDrawerWidth, refRightDrawerWidth] = useStateRef(defaultRightDrawerWidth)
-    let isResizingRightDrawer = useRef(0)
+    const isResizingRightDrawer = useRef(0)
 
     const handleMouseDown = (e) => {
         if (e.clientX > refLeftDrawerWidth.current-20 && e.clientX < refLeftDrawerWidth.current+20) {
@@ -128,7 +107,7 @@ function Document () {
         }
         const response = await fetch('/api/workspaces', {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -237,7 +216,7 @@ function Document () {
         }
         const response = await fetch('/api/workspaces/' + newWorkspaceName, {
             method: 'POST',
-            headers: headers
+            headers
         })
         if (!response.ok) {
             throw new Error(JSON.stringify(response))

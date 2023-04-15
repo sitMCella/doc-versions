@@ -83,6 +83,13 @@ cd ./frontend
 npm run build
 ```
 
+#### Format Code (Frontend)
+
+```sh
+cd ./frontend
+npm run lint
+```
+
 #### Eslint Check:
 
 ```sh
