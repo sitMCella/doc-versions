@@ -1,25 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Alert,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Divider,
-    Drawer,
-    List,
-    MenuItem,
-    Select,
-    Snackbar,
-    Stack,
-    TextField,
-    Typography
-} from "@mui/material"
+import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Workspace from "./Workspace";
 import GitGraph from "./GitGraph";
