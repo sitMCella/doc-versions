@@ -65,36 +65,51 @@ function Document () {
     const [fileExtension, setFileExtension] = useState('txt')
     const [newFileErrorMessage, setNewFileErrorMessage] = useState('')
 
-    const defaultDrawerWidth = 500
-    const minDrawerWidth = 400
-    const maxDrawerWidth = 650
+    const defaultLeftDrawerWidth = 500
+    const minLeftDrawerWidth = 400
+    const maxLeftDrawerWidth = 650
 
-    const [drawerWidth, setDrawerWidth, ref] = useStateRef(defaultDrawerWidth)
-    let isResizing = useRef(0)
+    const [leftDrawerWidth, setLeftDrawerWidth, refLeftDrawerWidth] = useStateRef(defaultLeftDrawerWidth)
+    let isResizingLeftDrawer = useRef(0)
     const [cursor, setCursor, refCursor] = useStateRef('default')
 
+    const defaultRightDrawerWidth = 500
+    const minRightDrawerWidth = 400
+    const maxRightDrawerWidth = 800
+
+    const [rightDrawerWidth, setRightDrawerWidth, refRightDrawerWidth] = useStateRef(defaultRightDrawerWidth)
+    let isResizingRightDrawer = useRef(0)
+
     const handleMouseDown = (e) => {
-        if (e.clientX > ref.current-20 && e.clientX < ref.current+20) {
-            isResizing.current = 1
+        if (e.clientX > refLeftDrawerWidth.current-20 && e.clientX < refLeftDrawerWidth.current+20) {
+            isResizingLeftDrawer.current = 1
+        }
+        if (e.clientX > (window.innerWidth-refRightDrawerWidth.current-20) && e.clientX < (window.innerWidth-refRightDrawerWidth.current+20)) {
+            isResizingRightDrawer.current = 1
         }
     }
 
     const handleMouseUp = () => {
-        isResizing.current = 0
+        isResizingLeftDrawer.current = 0
+        isResizingRightDrawer.current = 0
     }
 
     const handleMouseMove = (e) => {
-        if (e.clientX > ref.current-20 && e.clientX < ref.current+20) {
+        if (e.clientX > refLeftDrawerWidth.current-20 && e.clientX < refLeftDrawerWidth.current+20 && e.clientX > (window.innerWidth-refRightDrawerWidth.current-20) && e.clientX < (window.innerWidth-refRightDrawerWidth.current+20)) {
             setCursor('default')
         } else {
             setCursor('ew-resize')
         }
-        if(isResizing.current === 0) {
-            return
-        }
-        const newWidth = e.clientX - document.body.offsetLeft;
-        if (newWidth > minDrawerWidth && newWidth < maxDrawerWidth) {
-            setDrawerWidth(newWidth)
+        if(isResizingLeftDrawer.current === 1) {
+            const newWidth = e.clientX - document.body.offsetLeft;
+            if (newWidth > minLeftDrawerWidth && newWidth < maxLeftDrawerWidth) {
+                setLeftDrawerWidth(newWidth)
+            }
+        } else if(isResizingRightDrawer.current === 1) {
+            const newWidth = window.innerWidth - e.clientX - document.body.offsetLeft;
+            if (newWidth > minRightDrawerWidth && newWidth < maxRightDrawerWidth) {
+                setRightDrawerWidth(newWidth)
+            }
         }
     }
 
@@ -283,7 +298,7 @@ function Document () {
         <div>
             <Box sx={{ display: 'flex' }}>
                 <Drawer
-                    PaperProps={{ style: {width: ref.current, cursor: refCursor.current} }}
+                    PaperProps={{ style: {width: refLeftDrawerWidth.current, cursor: refCursor.current} }}
                     variant="permanent"
                     anchor="left"
                 >
@@ -354,7 +369,7 @@ function Document () {
             </Box>
             <Box sx={{ display: 'flex' }}>
                 <Drawer
-                    PaperProps={{ style: {width: '500px', cursor: refCursor.current} }}
+                    PaperProps={{ style: {width: refRightDrawerWidth.current, cursor: refCursor.current} }}
                     variant="permanent"
                     anchor="right"
                 >
