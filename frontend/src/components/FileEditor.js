@@ -310,32 +310,32 @@ function FileEditor (props) {
                         <div className="RichEditor-root">
                             <Stack direction="row">
                                 <FormControl sx={{width: '25ch'}}>
-                                <InputLabel id="font-family-select-label">Font Family</InputLabel>
-                                <Select
-                                    labelId="font-family-select-label"
-                                    id="font-family-select"
-                                    value={fontFamily}
-                                    label="Font Family"
-                                    onChange={handleChangeFontFamily}
-                                >
-                                    {fontFamilies.map(font =>
-                                        <MenuItem value={font}>{font}</MenuItem>
-                                    )}
-                                </Select>
+                                    <InputLabel id="font-family-select-label">Font Family</InputLabel>
+                                    <Select
+                                        labelId="font-family-select-label"
+                                        id="font-family-select"
+                                        value={fontFamily}
+                                        label="Font Family"
+                                        onChange={handleChangeFontFamily}
+                                    >
+                                        {fontFamilies.map(font =>
+                                            <MenuItem value={font}>{font}</MenuItem>
+                                        )}
+                                    </Select>
                                 </FormControl>
                                 <FormControl sx={{width: '15ch'}}>
-                                <InputLabel id="font-size-select-label">Font Size</InputLabel>
-                                <Select
-                                    labelId="font-size-select-label"
-                                    id="font-size-select"
-                                    value={fontSize}
-                                    label="Font Size"
-                                    onChange={handleChangeFontSize}
-                                >
-                                    {fontSizes.map(font =>
-                                        <MenuItem value={font}>{font}</MenuItem>
-                                    )}
-                                </Select>
+                                    <InputLabel id="font-size-select-label">Font Size</InputLabel>
+                                    <Select
+                                        labelId="font-size-select-label"
+                                        id="font-size-select"
+                                        value={fontSize}
+                                        label="Font Size"
+                                        onChange={handleChangeFontSize}
+                                    >
+                                        {fontSizes.map(font =>
+                                            <MenuItem value={font}>{font}</MenuItem>
+                                        )}
+                                    </Select>
                                 </FormControl>
                             </Stack>
                             <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>

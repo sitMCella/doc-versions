@@ -1,5 +1,26 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    Drawer, FormControl,
+    InputLabel,
+    List,
+    MenuItem,
+    Select,
+    Snackbar,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Workspace from "./Workspace";
 import GitGraph from "./GitGraph";
@@ -27,6 +48,7 @@ function Document () {
     const [logs, setLogs] = useState([])
     const [workspaceName, setWorkspaceName] = useState('')
     const [branchesAccordionExpanded, setBranchesAccordionExpanded] = useState(false)
+    const [historyAccordionExpanded, setHistoryAccordionExpanded] = useState(false)
     const [triggerGitGraph, setTriggerGitGraph] = useState(false)
     const [branch, setBranch] = useState('')
     const [branchLoaded, setBranchLoaded] = useState(false)
@@ -44,8 +66,8 @@ function Document () {
     const [newFileErrorMessage, setNewFileErrorMessage] = useState('')
 
     const defaultDrawerWidth = 500
-    const minDrawerWidth = 50
-    const maxDrawerWidth = 1000
+    const minDrawerWidth = 400
+    const maxDrawerWidth = 650
 
     const [drawerWidth, setDrawerWidth, ref] = useStateRef(defaultDrawerWidth)
     let isResizing = useRef(0)
@@ -112,6 +134,7 @@ function Document () {
         setBranches(workspaceBranches)
         setLogs(workspaceLogs)
         setBranchesAccordionExpanded(true)
+        setHistoryAccordionExpanded(true)
         setWorkspaceLoaded(true)
     }
 
@@ -123,6 +146,14 @@ function Document () {
         setTrigger((trigger) => trigger + 1)
         setFile('')
         setTriggerFile((triggerFile) => triggerFile + 1)
+    }
+
+    const selectWorkspaceBranchFromName = (e)  => {
+        const selectedBranch = branches.filter((b) => b.name === e.target.value)
+        if(selectedBranch.length === 0) {
+            return
+        }
+        selectWorkspaceBranch(selectedBranch[0].name)
     }
 
     const loadFiles = (loadedFiles) => {
@@ -137,6 +168,11 @@ function Document () {
 
     const updateBranchesAccordionExpanded = () => {
         setBranchesAccordionExpanded(!branchesAccordionExpanded)
+        setCursor('default')
+    }
+
+    const updateHistoryAccordionExpanded = () => {
+        setHistoryAccordionExpanded(!historyAccordionExpanded)
         setCursor('default')
     }
 
@@ -275,7 +311,21 @@ function Document () {
                         </AccordionSummary>
                         <AccordionDetails>
                             {
-                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                                workspaceLoaded &&
+                                    <FormControl sx={{width: '35ch', userSelect: 'none'}}>
+                                        <InputLabel id="branch-select-label">Branch</InputLabel>
+                                        <Select
+                                            labelId="branch-select-label"
+                                            id="branch-select"
+                                            value={branch}
+                                            label="Branch"
+                                            onChange={selectWorkspaceBranchFromName}
+                                        >
+                                            {branches.map(b =>
+                                                <MenuItem value={b.name}>{b.name}</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                             }
                         </AccordionDetails>
                     </Accordion>
@@ -301,6 +351,23 @@ function Document () {
                 <div>
                     <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} />
                 </div>
+            </Box>
+            <Box sx={{ display: 'flex' }}>
+                <Drawer
+                    PaperProps={{ style: {width: '500px', cursor: refCursor.current} }}
+                    variant="permanent"
+                    anchor="right"
+                >
+                    <Divider />
+                    {
+                        workspaceLoaded &&
+                            <div>
+                                <Typography variant="button" display="block" gutterBottom style={{padding: '10px'}}>History <b>{workspaceName}</b></Typography>
+                                <Divider />
+                                <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                            </div>
+                    }
+                </Drawer>
             </Box>
             <Dialog
                 open={openNewWorkspaceDialog}
