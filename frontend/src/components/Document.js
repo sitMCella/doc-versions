@@ -95,10 +95,16 @@ function Document () {
     }
 
     const handleMouseMove = (e) => {
-        if (e.clientX > refLeftDrawerWidth.current-20 && e.clientX < refLeftDrawerWidth.current+20 && e.clientX > (window.innerWidth-refRightDrawerWidth.current-20) && e.clientX < (window.innerWidth-refRightDrawerWidth.current+20)) {
-            setCursor('default')
+        const clientX = e.clientX
+        const leftDrawerX = refLeftDrawerWidth.current
+        const rightDrawerX = window.innerWidth-refRightDrawerWidth.current
+        if (clientX < leftDrawerX-15 || (clientX > leftDrawerX+10 && clientX < rightDrawerX-10) || clientX > rightDrawerX+15) {
+            refCursor.current = 'default'
         } else {
-            setCursor('ew-resize')
+            refCursor.current = 'ew-resize'
+        }
+        if(document.body.style.cursor !== refCursor.current) {
+            document.body.style.cursor = refCursor.current
         }
         if(isResizingLeftDrawer.current === 1) {
             const newWidth = e.clientX - document.body.offsetLeft;
@@ -298,7 +304,7 @@ function Document () {
         <div>
             <Box sx={{ display: 'flex' }}>
                 <Drawer
-                    PaperProps={{ style: {width: refLeftDrawerWidth.current, cursor: refCursor.current} }}
+                    PaperProps={{ style: {width: refLeftDrawerWidth.current} }}
                     variant="permanent"
                     anchor="left"
                 >
@@ -369,19 +375,22 @@ function Document () {
             </Box>
             <Box sx={{ display: 'flex' }}>
                 <Drawer
-                    PaperProps={{ style: {width: refRightDrawerWidth.current, cursor: refCursor.current} }}
+                    PaperProps={{ style: {width: refRightDrawerWidth.current} }}
                     variant="permanent"
                     anchor="right"
                 >
                     <Divider />
-                    {
-                        workspaceLoaded &&
-                            <div>
-                                <Typography variant="button" display="block" gutterBottom style={{padding: '10px'}}>History <b>{workspaceName}</b></Typography>
-                                <Divider />
-                                <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
-                            </div>
-                    }
+                    <Accordion expanded={historyAccordionExpanded}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateHistoryAccordionExpanded}>
+                            <Typography>History</Typography>
+                            <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {
+                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                            }
+                        </AccordionDetails>
+                    </Accordion>
                 </Drawer>
             </Box>
             <Dialog
