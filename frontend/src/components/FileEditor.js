@@ -36,7 +36,7 @@ function FileEditor (props) {
             blocks: [
                 {
                     key: "3eesq",
-                    text: text,
+                    text,
                     type: "unstyled",
                     depth: 0,
                     inlineStyleRanges: [],
@@ -54,7 +54,7 @@ function FileEditor (props) {
         }
         const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName + '/files/' + fileName, {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -98,6 +98,7 @@ function FileEditor (props) {
                     setFileErrorMessage('Cannot retrieve the file.')
                 })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.trigger])
 
     const handleClickFileSave = () => {
@@ -119,7 +120,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'POST',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -139,7 +140,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'PUT',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -155,7 +156,7 @@ function FileEditor (props) {
         }
         const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + branchName, {
             method: 'POST',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -246,7 +247,7 @@ function FileEditor (props) {
         data.append('commit_message', commitMessage)
         const options = {
             method: 'DELETE',
-            headers: headers,
+            headers,
             body: data
         }
         delete options.headers['Content-Type']
@@ -310,35 +311,35 @@ function FileEditor (props) {
                         <div className="RichEditor-root">
                             <Stack direction="row">
                                 <FormControl sx={{width: '25ch'}}>
-                                <InputLabel id="font-family-select-label">Font Family</InputLabel>
-                                <Select
-                                    labelId="font-family-select-label"
-                                    id="font-family-select"
-                                    value={fontFamily}
-                                    label="Font Family"
-                                    onChange={handleChangeFontFamily}
-                                >
-                                    {fontFamilies.map(font =>
-                                        <MenuItem value={font}>{font}</MenuItem>
-                                    )}
-                                </Select>
+                                    <InputLabel id="font-family-select-label">Font Family</InputLabel>
+                                    <Select
+                                        labelId="font-family-select-label"
+                                        id="font-family-select"
+                                        value={fontFamily}
+                                        label="Font Family"
+                                        onChange={handleChangeFontFamily}
+                                    >
+                                        {fontFamilies.map((font,index) =>
+                                            <MenuItem key={index} value={font}>{font}</MenuItem>
+                                        )}
+                                    </Select>
                                 </FormControl>
                                 <FormControl sx={{width: '15ch'}}>
-                                <InputLabel id="font-size-select-label">Font Size</InputLabel>
-                                <Select
-                                    labelId="font-size-select-label"
-                                    id="font-size-select"
-                                    value={fontSize}
-                                    label="Font Size"
-                                    onChange={handleChangeFontSize}
-                                >
-                                    {fontSizes.map(font =>
-                                        <MenuItem value={font}>{font}</MenuItem>
-                                    )}
-                                </Select>
+                                    <InputLabel id="font-size-select-label">Font Size</InputLabel>
+                                    <Select
+                                        labelId="font-size-select-label"
+                                        id="font-size-select"
+                                        value={fontSize}
+                                        label="Font Size"
+                                        onChange={handleChangeFontSize}
+                                    >
+                                        {fontSizes.map((font, index) =>
+                                            <MenuItem key={index} value={font}>{font}</MenuItem>
+                                        )}
+                                    </Select>
                                 </FormControl>
                             </Stack>
-                            <div className="RichEditor-editor" style={{fontFamily: fontFamily, fontSize: fontSize + 'px'}}>
+                            <div className="RichEditor-editor" style={{fontFamily, fontSize: fontSize + 'px'}}>
                                 <Editor
                                     editorState={editorState}
                                     onChange={setEditorState}

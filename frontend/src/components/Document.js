@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
+import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Workspace from "./Workspace";
 import GitGraph from "./GitGraph";
@@ -27,6 +27,7 @@ function Document () {
     const [logs, setLogs] = useState([])
     const [workspaceName, setWorkspaceName] = useState('')
     const [branchesAccordionExpanded, setBranchesAccordionExpanded] = useState(false)
+    const [historyAccordionExpanded, setHistoryAccordionExpanded] = useState(false)
     const [triggerGitGraph, setTriggerGitGraph] = useState(false)
     const [branch, setBranch] = useState('')
     const [branchLoaded, setBranchLoaded] = useState(false)
@@ -43,36 +44,60 @@ function Document () {
     const [fileExtension, setFileExtension] = useState('txt')
     const [newFileErrorMessage, setNewFileErrorMessage] = useState('')
 
-    const defaultDrawerWidth = 500
-    const minDrawerWidth = 50
-    const maxDrawerWidth = 1000
+    const defaultLeftDrawerWidth = 500
+    const minLeftDrawerWidth = 400
+    const maxLeftDrawerWidth = 650
 
-    const [drawerWidth, setDrawerWidth, ref] = useStateRef(defaultDrawerWidth)
-    let isResizing = useRef(0)
+    // eslint-disable-next-line
+    const [leftDrawerWidth, setLeftDrawerWidth, refLeftDrawerWidth] = useStateRef(defaultLeftDrawerWidth)
+    const isResizingLeftDrawer = useRef(0)
+    // eslint-disable-next-line
     const [cursor, setCursor, refCursor] = useStateRef('default')
 
+    const defaultRightDrawerWidth = 500
+    const minRightDrawerWidth = 400
+    const maxRightDrawerWidth = 800
+
+    // eslint-disable-next-line
+    const [rightDrawerWidth, setRightDrawerWidth, refRightDrawerWidth] = useStateRef(defaultRightDrawerWidth)
+    const isResizingRightDrawer = useRef(0)
+
     const handleMouseDown = (e) => {
-        if (e.clientX > ref.current-20 && e.clientX < ref.current+20) {
-            isResizing.current = 1
+        if (e.clientX > refLeftDrawerWidth.current-20 && e.clientX < refLeftDrawerWidth.current+20) {
+            isResizingLeftDrawer.current = 1
+        }
+        if (e.clientX > (window.innerWidth-refRightDrawerWidth.current-20) && e.clientX < (window.innerWidth-refRightDrawerWidth.current+20)) {
+            isResizingRightDrawer.current = 1
         }
     }
 
     const handleMouseUp = () => {
-        isResizing.current = 0
+        isResizingLeftDrawer.current = 0
+        isResizingRightDrawer.current = 0
     }
 
     const handleMouseMove = (e) => {
-        if (e.clientX > ref.current-20 && e.clientX < ref.current+20) {
-            setCursor('default')
+        const clientX = e.clientX
+        const leftDrawerX = refLeftDrawerWidth.current
+        const rightDrawerX = window.innerWidth-refRightDrawerWidth.current
+        if (clientX < leftDrawerX-15 || (clientX > leftDrawerX+10 && clientX < rightDrawerX-10) || clientX > rightDrawerX+15) {
+            refCursor.current = 'default'
         } else {
-            setCursor('ew-resize')
+            refCursor.current = 'ew-resize'
         }
-        if(isResizing.current === 0) {
-            return
+        if(document.body.style.cursor !== refCursor.current) {
+            document.body.style.cursor = refCursor.current
         }
-        const newWidth = e.clientX - document.body.offsetLeft;
-        if (newWidth > minDrawerWidth && newWidth < maxDrawerWidth) {
-            setDrawerWidth(newWidth)
+        if(isResizingLeftDrawer.current === 1) {
+            const newWidth = e.clientX - document.body.offsetLeft;
+            if (newWidth > minLeftDrawerWidth && newWidth < maxLeftDrawerWidth) {
+                setLeftDrawerWidth(newWidth)
+            }
+        } else if(isResizingRightDrawer.current === 1) {
+            const newWidth = window.innerWidth - e.clientX - document.body.offsetLeft;
+            if (newWidth > minRightDrawerWidth && newWidth < maxRightDrawerWidth) {
+                setRightDrawerWidth(newWidth)
+            }
         }
     }
 
@@ -82,7 +107,7 @@ function Document () {
         }
         const response = await fetch('/api/workspaces', {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -112,6 +137,7 @@ function Document () {
         setBranches(workspaceBranches)
         setLogs(workspaceLogs)
         setBranchesAccordionExpanded(true)
+        setHistoryAccordionExpanded(true)
         setWorkspaceLoaded(true)
     }
 
@@ -123,6 +149,14 @@ function Document () {
         setTrigger((trigger) => trigger + 1)
         setFile('')
         setTriggerFile((triggerFile) => triggerFile + 1)
+    }
+
+    const selectWorkspaceBranchFromName = (e)  => {
+        const selectedBranch = branches.filter((b) => b.name === e.target.value)
+        if(selectedBranch.length === 0) {
+            return
+        }
+        selectWorkspaceBranch(selectedBranch[0].name)
     }
 
     const loadFiles = (loadedFiles) => {
@@ -137,6 +171,11 @@ function Document () {
 
     const updateBranchesAccordionExpanded = () => {
         setBranchesAccordionExpanded(!branchesAccordionExpanded)
+        setCursor('default')
+    }
+
+    const updateHistoryAccordionExpanded = () => {
+        setHistoryAccordionExpanded(!historyAccordionExpanded)
         setCursor('default')
     }
 
@@ -160,6 +199,7 @@ function Document () {
                 setWorkspaceErrorMessage('Cannot retrieve the Workspaces, please refresh the page.')
             })
         return () => controller.abort()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleNewWorkspaceClick = () => {
@@ -176,7 +216,7 @@ function Document () {
         }
         const response = await fetch('/api/workspaces/' + newWorkspaceName, {
             method: 'POST',
-            headers: headers
+            headers
         })
         if (!response.ok) {
             throw new Error(JSON.stringify(response))
@@ -247,7 +287,7 @@ function Document () {
         <div>
             <Box sx={{ display: 'flex' }}>
                 <Drawer
-                    PaperProps={{ style: {width: ref.current, cursor: refCursor.current} }}
+                    PaperProps={{ style: {width: refLeftDrawerWidth.current} }}
                     variant="permanent"
                     anchor="left"
                 >
@@ -258,8 +298,8 @@ function Document () {
                         </AccordionSummary>
                         <AccordionDetails>
                             <List>
-                                {workspaces.map(workspace =>
-                                    <Workspace trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
+                                {workspaces.map((workspace, index) =>
+                                    <Workspace key={index} trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
                                 )}
                             </List>
                             <Stack direction="row">
@@ -275,7 +315,21 @@ function Document () {
                         </AccordionSummary>
                         <AccordionDetails>
                             {
-                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                                workspaceLoaded &&
+                                    <FormControl sx={{width: '35ch', userSelect: 'none'}}>
+                                        <InputLabel id="branch-select-label">Branch</InputLabel>
+                                        <Select
+                                            labelId="branch-select-label"
+                                            id="branch-select"
+                                            value={branch}
+                                            label="Branch"
+                                            onChange={selectWorkspaceBranchFromName}
+                                        >
+                                            {branches.map((b, index) =>
+                                                <MenuItem key={index} value={b.name}>{b.name}</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                             }
                         </AccordionDetails>
                     </Accordion>
@@ -301,6 +355,26 @@ function Document () {
                 <div>
                     <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} />
                 </div>
+            </Box>
+            <Box sx={{ display: 'flex' }}>
+                <Drawer
+                    PaperProps={{ style: {width: refRightDrawerWidth.current} }}
+                    variant="permanent"
+                    anchor="right"
+                >
+                    <Divider />
+                    <Accordion expanded={historyAccordionExpanded}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateHistoryAccordionExpanded}>
+                            <Typography>History</Typography>
+                            <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {
+                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                            }
+                        </AccordionDetails>
+                    </Accordion>
+                </Drawer>
             </Box>
             <Dialog
                 open={openNewWorkspaceDialog}

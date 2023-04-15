@@ -16,7 +16,7 @@ function FileTree (props) {
         }
         const response = await fetch('/api/workspaces/' + props.workspaceName + '/branches/' + props.branchName + '/files', {
             method: 'GET',
-            headers: headers,
+            headers,
             signal
         })
         if (!response.ok) {
@@ -46,6 +46,7 @@ function FileTree (props) {
                     setFilesErrorMessage('Cannot retrieve the Workspace files, please refresh the page.')
                 })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.trigger])
 
     return (

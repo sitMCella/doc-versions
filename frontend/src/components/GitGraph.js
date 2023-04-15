@@ -29,7 +29,7 @@ function GitGraph (props) {
     }
 
     const configureBranchDependencies = (branchName) => {
-        let parentCommits = []
+        const parentCommits = []
         const branchLogs = props.logs.filter(logs => logs.branch_name === branchName)
         for (const key in branchLogs) {
             const commit = branchLogs[key].commit_uuid
@@ -40,7 +40,7 @@ function GitGraph (props) {
                     branchName: branchLogs[key].branch_name,
                     commitUuid: commit,
                     message: branchLogs[key].message,
-                    parentCommit: parentCommit
+                    parentCommit
                 })
             } else {
                 parentCommits.push({
