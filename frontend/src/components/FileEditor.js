@@ -98,6 +98,7 @@ function FileEditor (props) {
                     setFileErrorMessage('Cannot retrieve the file.')
                 })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.trigger])
 
     const handleClickFileSave = () => {
@@ -318,8 +319,8 @@ function FileEditor (props) {
                                         label="Font Family"
                                         onChange={handleChangeFontFamily}
                                     >
-                                        {fontFamilies.map(font =>
-                                            <MenuItem value={font}>{font}</MenuItem>
+                                        {fontFamilies.map((font,index) =>
+                                            <MenuItem key={index} value={font}>{font}</MenuItem>
                                         )}
                                     </Select>
                                 </FormControl>
@@ -332,8 +333,8 @@ function FileEditor (props) {
                                         label="Font Size"
                                         onChange={handleChangeFontSize}
                                     >
-                                        {fontSizes.map(font =>
-                                            <MenuItem value={font}>{font}</MenuItem>
+                                        {fontSizes.map((font, index) =>
+                                            <MenuItem key={index} value={font}>{font}</MenuItem>
                                         )}
                                     </Select>
                                 </FormControl>

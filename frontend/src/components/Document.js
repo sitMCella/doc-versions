@@ -69,14 +69,17 @@ function Document () {
     const minLeftDrawerWidth = 400
     const maxLeftDrawerWidth = 650
 
+    // eslint-disable-next-line
     const [leftDrawerWidth, setLeftDrawerWidth, refLeftDrawerWidth] = useStateRef(defaultLeftDrawerWidth)
     let isResizingLeftDrawer = useRef(0)
+    // eslint-disable-next-line
     const [cursor, setCursor, refCursor] = useStateRef('default')
 
     const defaultRightDrawerWidth = 500
     const minRightDrawerWidth = 400
     const maxRightDrawerWidth = 800
 
+    // eslint-disable-next-line
     const [rightDrawerWidth, setRightDrawerWidth, refRightDrawerWidth] = useStateRef(defaultRightDrawerWidth)
     let isResizingRightDrawer = useRef(0)
 
@@ -217,6 +220,7 @@ function Document () {
                 setWorkspaceErrorMessage('Cannot retrieve the Workspaces, please refresh the page.')
             })
         return () => controller.abort()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleNewWorkspaceClick = () => {
@@ -315,8 +319,8 @@ function Document () {
                         </AccordionSummary>
                         <AccordionDetails>
                             <List>
-                                {workspaces.map(workspace =>
-                                    <Workspace trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
+                                {workspaces.map((workspace, index) =>
+                                    <Workspace key={index} trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
                                 )}
                             </List>
                             <Stack direction="row">
@@ -342,8 +346,8 @@ function Document () {
                                             label="Branch"
                                             onChange={selectWorkspaceBranchFromName}
                                         >
-                                            {branches.map(b =>
-                                                <MenuItem value={b.name}>{b.name}</MenuItem>
+                                            {branches.map((b, index) =>
+                                                <MenuItem key={index} value={b.name}>{b.name}</MenuItem>
                                             )}
                                         </Select>
                                     </FormControl>

@@ -4,9 +4,11 @@ import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function Workspace (props) {
+    // eslint-disable-next-line
     const [branches, setBranches] = useState([])
     const [branchesError, setBranchesError] = useState(false)
     const [branchesErrorMessage, setBranchesErrorMessage] = useState('')
+    // eslint-disable-next-line
     const [logs, setLogs] = useState([])
     const [openDeleteWorkspaceDialog, setOpenDeleteWorkspaceDialog] = useState(false)
 
@@ -125,6 +127,7 @@ function Workspace (props) {
 
     useEffect(() => {
         handleWorkspaceClick()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.trigger])
 
     return (

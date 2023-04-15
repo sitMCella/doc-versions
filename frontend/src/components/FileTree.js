@@ -46,6 +46,7 @@ function FileTree (props) {
                     setFilesErrorMessage('Cannot retrieve the Workspace files, please refresh the page.')
                 })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.trigger])
 
     return (
