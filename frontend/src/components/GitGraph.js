@@ -162,13 +162,13 @@ function GitGraph (props) {
                 return
             }
             const gitgraph = document.getElementById("gitgraph")
-            const svg = gitgraph.getElementsByTagName('svg')[0];
-            svg.addEventListener("mouseover",  (e) => svg.style.cursor = 'default');
-            const elements = Array.from(svg.getElementsByTagName('text'));
+            const svg = gitgraph.getElementsByTagName('svg')[0]
+            svg.addEventListener("mouseover",  (e) => {svg.style.cursor = 'default'})
+            const elements = Array.from(svg.getElementsByTagName('text'))
             elements.forEach(function(el) {
-                el.addEventListener("mouseover",  (e) => el.style.cursor = 'pointer');
+                el.addEventListener("mouseover",  (e) => {el.style.cursor = 'pointer'})
             })
-        }, 1000);
+        }, 1000)
     }, [loadComplete])
 
     return (
