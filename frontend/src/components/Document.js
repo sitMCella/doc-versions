@@ -1,10 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, InputLabel, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, IconButton, InputLabel, List, MenuItem, Select, Snackbar, Stack, TextField, Typography} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import Workspace from "./Workspace";
-import GitGraph from "./GitGraph";
-import FileTree from "./FileTree";
-import FileEditor from "./FileEditor";
+import Brightness4Icon from '@mui/icons-material/Brightness4'
+import Brightness7Icon from '@mui/icons-material/Brightness7'
+import Workspace from "./Workspace"
+import GitGraph from "./GitGraph"
+import FileTree from "./FileTree"
+import FileEditor from "./FileEditor"
 
 function useStateRef(initialValue) {
     const [value, setValue] = useState(initialValue);
@@ -283,170 +286,208 @@ function Document () {
         }
     }
 
+    const [mode, setMode] = useState('light');
+
+    const toggleThemeMode = () => {
+        if(mode === 'dark') {
+            setMode('light')
+        } else {
+            setMode('dark')
+        }
+    }
+
+    const darkTheme = createTheme({
+        palette: {
+            mode
+        },
+    })
+
     return (
         <div>
-            <Box sx={{ display: 'flex' }}>
-                <Drawer
-                    PaperProps={{ style: {width: refLeftDrawerWidth.current} }}
-                    variant="permanent"
-                    anchor="left"
+            <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <Box sx={{ display: 'flex' }}>
+                    <Drawer
+                        PaperProps={{ style: {width: refLeftDrawerWidth.current} }}
+                        variant="permanent"
+                        anchor="left"
+                    >
+                        <Divider />
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="workspaces-panel">
+                                <Typography>Workspaces</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <List>
+                                    {workspaces.map((workspace, index) =>
+                                        <Workspace key={index} trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
+                                    )}
+                                </List>
+                                <Stack direction="row">
+                                    <Button onClick={handleNewWorkspaceClick}>New Workspace</Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                        <Accordion expanded={branchesAccordionExpanded}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="branches-panel" onClick={updateBranchesAccordionExpanded}>
+                                <Typography>Branches</Typography>
+                                <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {
+                                    workspaceLoaded &&
+                                        <FormControl sx={{width: '35ch', userSelect: 'none'}}>
+                                            <InputLabel id="branch-select-label">Branch</InputLabel>
+                                            <Select
+                                                labelId="branch-select-label"
+                                                id="branch-select"
+                                                value={branch}
+                                                label="Branch"
+                                                onChange={selectWorkspaceBranchFromName}
+                                            >
+                                                {branches.map((b, index) =>
+                                                    <MenuItem key={index} value={b.name}>{b.name}</MenuItem>
+                                                )}
+                                            </Select>
+                                        </FormControl>
+                                }
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider />
+                        <Accordion expanded={directoryAccordionExpanded}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateDirectoryAccordionExpanded}>
+                                <Typography>Directory</Typography>
+                                <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{branch}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {
+                                    workspaceLoaded && branchLoaded &&
+                                        <Box>
+                                            <FileTree trigger={trigger} workspaceName={workspaceName} branchName={branch} handleLoadFiles={loadFiles} handleSelectFile={selectFile} />
+                                            <Stack direction="row">
+                                                <Button style={{marginTop: '10px'}} onClick={handleNewFileClick}>New File</Button>
+                                            </Stack>
+                                        </Box>
+                                }
+                            </AccordionDetails>
+                        </Accordion>
+                    </Drawer>
+                    <div>
+                        <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} />
+                    </div>
+                </Box>
+                <Box sx={{ display: 'flex' }}>
+                    <Drawer
+                        PaperProps={{ style: {width: refRightDrawerWidth.current} }}
+                        variant="permanent"
+                        anchor="right"
+                    >
+                        <Divider />
+                        <Accordion expanded={historyAccordionExpanded}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateHistoryAccordionExpanded}>
+                                <Typography>History</Typography>
+                                <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {
+                                    workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
+                                }
+                            </AccordionDetails>
+                        </Accordion>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                width: '100%',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                bgcolor: 'background.default',
+                                color: 'text.primary',
+                                borderRadius: 1,
+                                bottom: '0',
+                                marginTop: 'auto',
+                                p: 3,
+                            }}
+                        >
+                            {mode} mode
+                            <IconButton sx={{ ml: 1 }} onClick={toggleThemeMode} color="inherit">
+                                {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                            </IconButton>
+                        </Box>
+                    </Drawer>
+                </Box>
+                <Dialog
+                    open={openNewWorkspaceDialog}
+                    onClose={handleCloseNewWorkspaceDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    fullWidth={true}
+                    maxWidth="sm"
                 >
-                    <Divider />
-                    <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="workspaces-panel">
-                            <Typography>Workspaces</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <List>
-                                {workspaces.map((workspace, index) =>
-                                    <Workspace key={index} trigger={triggerGitGraph && workspaceName === workspace.name} name={workspace.name} handleReloadWorkspaceLogs={reloadWorkspaceLogs} handleWorkspaceLogs={updateWorkspaceLogs} handleDeleteWorkspace={deleteWorkspace} />
-                                )}
-                            </List>
-                            <Stack direction="row">
-                                <Button onClick={handleNewWorkspaceClick}>New Workspace</Button>
+                    <DialogTitle id="alert-new-workspace-dialog-title">
+                        {"Create Workspace"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField autoFocus required margin="dense" id="workspaceName" label="Workspace Name" fullWidth variant="standard" onChange = {(e) => {setNewWorkspaceName(e.target.value)}}/>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseNewWorkspaceDialog}>Close</Button>
+                        <Button onClick={handleNewWorkspace} autoFocus>Save</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={openNewFileDialog}
+                    onClose={handleCloseNewFileDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    fullWidth={true}
+                    maxWidth="sm"
+                >
+                    <DialogTitle id="alert-new-file-dialog-title">
+                        {"Create File"}
+                    </DialogTitle>
+                    <DialogContent>
+                        {newFileErrorMessage && <Alert severity="error">{newFileErrorMessage}</Alert>}
+                        <Box>
+                            <TextField autoFocus required margin="dense" id="fileName" label="File Name" fullWidth variant="standard" onChange = {(e) => {setNewFileName(e.target.value)}}/>
+                            <Stack direction="row"
+                                   justifyContent="left"
+                                   alignItems="center"
+                                   spacing={2}>
+                                <Typography align="center">File Extension:</Typography>
+                                <Select
+                                    labelId="file-extension-select"
+                                    id="file-extension-select"
+                                    value={fileExtension}
+                                    onChange={handleFileExtensionChange}
+                                >
+                                    <MenuItem value="txt">txt</MenuItem>
+                                    <MenuItem value="rtf">rtf</MenuItem>
+                                    <MenuItem value="md">md</MenuItem>
+                                </Select>
                             </Stack>
-                        </AccordionDetails>
-                    </Accordion>
-                    <Divider />
-                    <Accordion expanded={branchesAccordionExpanded}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="branches-panel" onClick={updateBranchesAccordionExpanded}>
-                            <Typography>Branches</Typography>
-                            <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {
-                                workspaceLoaded &&
-                                    <FormControl sx={{width: '35ch', userSelect: 'none'}}>
-                                        <InputLabel id="branch-select-label">Branch</InputLabel>
-                                        <Select
-                                            labelId="branch-select-label"
-                                            id="branch-select"
-                                            value={branch}
-                                            label="Branch"
-                                            onChange={selectWorkspaceBranchFromName}
-                                        >
-                                            {branches.map((b, index) =>
-                                                <MenuItem key={index} value={b.name}>{b.name}</MenuItem>
-                                            )}
-                                        </Select>
-                                    </FormControl>
-                            }
-                        </AccordionDetails>
-                    </Accordion>
-                    <Divider />
-                    <Accordion expanded={directoryAccordionExpanded}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateDirectoryAccordionExpanded}>
-                            <Typography>Directory</Typography>
-                            <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{branch}</b></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {
-                                workspaceLoaded && branchLoaded &&
-                                    <Box>
-                                        <FileTree trigger={trigger} workspaceName={workspaceName} branchName={branch} handleLoadFiles={loadFiles} handleSelectFile={selectFile} />
-                                        <Stack direction="row">
-                                            <Button style={{marginTop: '10px'}} onClick={handleNewFileClick}>New File</Button>
-                                        </Stack>
-                                    </Box>
-                            }
-                        </AccordionDetails>
-                    </Accordion>
-                </Drawer>
-                <div>
-                    <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} />
-                </div>
-            </Box>
-            <Box sx={{ display: 'flex' }}>
-                <Drawer
-                    PaperProps={{ style: {width: refRightDrawerWidth.current} }}
-                    variant="permanent"
-                    anchor="right"
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseNewFileDialog}>Close</Button>
+                        <Button onClick={handleNewFile} autoFocus>Create</Button>
+                    </DialogActions>
+                </Dialog>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}
+                    open={workspaceError}
+                    key={'errorMessage'}
+                    autoHideDuration={5000}
+                    onClose={() => setWorkspaceError(false)}
                 >
-                    <Divider />
-                    <Accordion expanded={historyAccordionExpanded}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateHistoryAccordionExpanded}>
-                            <Typography>History</Typography>
-                            <Typography variant="button" display="block" gutterBottom style={{paddingLeft: '10px'}}><b>{workspaceName}</b></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {
-                                workspaceLoaded && <GitGraph branches={branches} logs={logs} handleSelectWorkspaceBranch={selectWorkspaceBranch} />
-                            }
-                        </AccordionDetails>
-                    </Accordion>
-                </Drawer>
-            </Box>
-            <Dialog
-                open={openNewWorkspaceDialog}
-                onClose={handleCloseNewWorkspaceDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                fullWidth={true}
-                maxWidth="sm"
-            >
-                <DialogTitle id="alert-new-workspace-dialog-title">
-                    {"Create Workspace"}
-                </DialogTitle>
-                <DialogContent>
-                    <TextField autoFocus required margin="dense" id="workspaceName" label="Workspace Name" fullWidth variant="standard" onChange = {(e) => {setNewWorkspaceName(e.target.value)}}/>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseNewWorkspaceDialog}>Close</Button>
-                    <Button onClick={handleNewWorkspace} autoFocus>Save</Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog
-                open={openNewFileDialog}
-                onClose={handleCloseNewFileDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                fullWidth={true}
-                maxWidth="sm"
-            >
-                <DialogTitle id="alert-new-file-dialog-title">
-                    {"Create File"}
-                </DialogTitle>
-                <DialogContent>
-                    {newFileErrorMessage && <Alert severity="error">{newFileErrorMessage}</Alert>}
-                    <Box>
-                        <TextField autoFocus required margin="dense" id="fileName" label="File Name" fullWidth variant="standard" onChange = {(e) => {setNewFileName(e.target.value)}}/>
-                        <Stack direction="row"
-                               justifyContent="left"
-                               alignItems="center"
-                               spacing={2}>
-                            <Typography align="center">File Extension:</Typography>
-                            <Select
-                                labelId="file-extension-select"
-                                id="file-extension-select"
-                                value={fileExtension}
-                                onChange={handleFileExtensionChange}
-                            >
-                                <MenuItem value="txt">txt</MenuItem>
-                                <MenuItem value="rtf">rtf</MenuItem>
-                                <MenuItem value="md">md</MenuItem>
-                            </Select>
-                        </Stack>
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseNewFileDialog}>Close</Button>
-                    <Button onClick={handleNewFile} autoFocus>Create</Button>
-                </DialogActions>
-            </Dialog>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                }}
-                open={workspaceError}
-                key={'errorMessage'}
-                autoHideDuration={5000}
-                onClose={() => setWorkspaceError(false)}
-            >
-                <Alert severity="error" sx={{ width: '100%' }}>
-                    {workspaceErrorMessage}
-                </Alert>
-            </Snackbar>
+                    <Alert severity="error" sx={{ width: '100%' }}>
+                        {workspaceErrorMessage}
+                    </Alert>
+                </Snackbar>
+            </ThemeProvider>
         </div>
     )
 }

@@ -5,7 +5,6 @@
 }
 
 .RichEditor-root {
-    background: #fff;
     border: 1px solid #ddd;
     font-family: 'Georgia', serif;
     font-size: 14px;
@@ -19,17 +18,19 @@
     font-size: 16px;
     margin-top: 10px;
     padding-top: 10px;
+    line-height: 0.5;
 }
 
 .wrapper-class {
 }
 
 .editor-class {
-    background-color: white;
     padding: 1rem;
     border: 1px solid #ccc;
+    line-height: 0.5;
 }
 
 .toolbar-class {
     border: 1px solid #ccc;
+    color: black;
 }
