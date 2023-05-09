@@ -4,6 +4,8 @@ import {Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CssBa
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import Workspace from "./Workspace"
 import GitGraph from "./GitGraph"
 import FileTree from "./FileTree"
@@ -46,9 +48,10 @@ function Document () {
     const [newFileName, setNewFileName] = useState('')
     const [fileExtension, setFileExtension] = useState('txt')
     const [newFileErrorMessage, setNewFileErrorMessage] = useState('')
+    const [rightDrawerOpen, setRightDrawerOpen] = useState(true)
 
-    const defaultLeftDrawerWidth = 500
-    const minLeftDrawerWidth = 400
+    const defaultLeftDrawerWidth = 400
+    const minLeftDrawerWidth = 300
     const maxLeftDrawerWidth = 650
 
     // eslint-disable-next-line
@@ -286,6 +289,23 @@ function Document () {
         }
     }
 
+    const handleRightDrawerClose = () => {
+        setRightDrawerOpen(false)
+        if(window.innerWidth < 2000) {
+            setRightDrawerWidth(50)
+            refRightDrawerWidth.current = 50
+        } else {
+            setRightDrawerWidth(defaultRightDrawerWidth)
+            refRightDrawerWidth.current = defaultRightDrawerWidth
+        }
+    }
+
+    const handleLeftDrawerOpen = () => {
+        setRightDrawerWidth(defaultRightDrawerWidth)
+        refRightDrawerWidth.current = defaultRightDrawerWidth
+        setRightDrawerOpen(true)
+    }
+
     const [mode, setMode] = useState('light');
 
     const toggleThemeMode = () => {
@@ -337,7 +357,7 @@ function Document () {
                             <AccordionDetails>
                                 {
                                     workspaceLoaded &&
-                                        <FormControl sx={{width: '35ch', userSelect: 'none'}}>
+                                        <FormControl sx={{minWidth: '30ch', maxWidth: '50ch', userSelect: 'none'}}>
                                             <InputLabel id="branch-select-label">Branch</InputLabel>
                                             <Select
                                                 labelId="branch-select-label"
@@ -374,15 +394,39 @@ function Document () {
                         </Accordion>
                     </Drawer>
                     <div>
-                        <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} />
+                        <FileEditor trigger={triggerFile} workspaceName={workspaceName} branchName={branch} fileName={file} isNewFile={isNewFile} branches={branches} handleFileEvent={fileEvent} leftPosition={refLeftDrawerWidth.current+30} rightPosition={refRightDrawerWidth.current-30} />
                     </div>
                 </Box>
+                {
+                    <Box sx={{ display: 'flex' }}>
+                        <Drawer
+                            PaperProps={{ style: {width: '50px'} }}
+                            variant="persistent"
+                            anchor="right"
+                            open={!rightDrawerOpen}
+                        >
+                            <div>
+                                <IconButton onClick={handleLeftDrawerOpen}>
+                                    <ChevronLeftIcon />
+                                </IconButton>
+                            </div>
+                        </Drawer>
+                    </Box>
+                }
                 <Box sx={{ display: 'flex' }}>
                     <Drawer
                         PaperProps={{ style: {width: refRightDrawerWidth.current} }}
-                        variant="permanent"
+                        variant="persistent"
                         anchor="right"
+                        open={rightDrawerOpen}
                     >
+                        <div>
+                            <Stack direction="row">
+                                <IconButton onClick={handleRightDrawerClose}>
+                                    <ChevronRightIcon />
+                                </IconButton>
+                            </Stack>
+                        </div>
                         <Divider />
                         <Accordion expanded={historyAccordionExpanded}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" onClick={updateHistoryAccordionExpanded}>

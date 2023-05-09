@@ -32,18 +32,23 @@ function FileEditor (props) {
     const fontSizes = ["9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "20", "22", "24", "36", "48", "64"]
 
     const createEditorSimpleTextFile = (text) => {
+        const lines = text.split(/\r?\n/)
+        const blocks = []
+        for (const line of lines) {
+            const key = (Math.random() + 1).toString(36).substring(8)
+            const block = {
+                key,
+                text: line,
+                type: "unstyled",
+                depth: 0,
+                inlineStyleRanges: [],
+                entityRanges: [],
+                data: {},
+            }
+            blocks.push(block)
+        }
         return convertFromRaw({
-            blocks: [
-                {
-                    key: "3eesq",
-                    text,
-                    type: "unstyled",
-                    depth: 0,
-                    inlineStyleRanges: [],
-                    entityRanges: [],
-                    data: {},
-                },
-            ],
+            blocks,
             entityMap: {},
         })
     }
@@ -72,9 +77,7 @@ function FileEditor (props) {
         setFileName(props.fileName)
         setRtfFile(props.fileName.endsWith(".rtf"))
         if (props.trigger) {
-            if(editorRef !== null && editorRef.current !== null && editorRef.current.focus !== undefined) {
-                editorRef.current.focus()
-            }
+            focusEditor()
             if (props.isNewFile === true) {
                 setEditorDeleteButtonDisabled(true)
                 setEditorSaveButtonDisabled(false)
@@ -300,15 +303,21 @@ function FileEditor (props) {
         setFontSize(e.target.value)
     }
 
+    const focusEditor = () => {
+        if(editorRef !== null && editorRef.current !== null && editorRef.current.focus !== undefined) {
+            editorRef.current.focus()
+        }
+    }
+
     return (
         <div className="content">
-            <Card sx={{ width: '75%' }}>
+            <Card sx={{ marginLeft: props.leftPosition + 'px', width: window.innerWidth - props.rightPosition - props.leftPosition + 435 - 490 + 'px' }}>
                 <CardContent>
                     <Stack direction="row" style={{userSelect: 'none'}}>
                         <Typography variant="h7" color="text.secondary" gutterBottom>{props.fileName}</Typography>
                     </Stack>
                     { !rtfFile &&
-                        <div className="RichEditor-root">
+                        <div className="RichEditor-root" onClick={focusEditor}>
                             <Stack direction="row">
                                 <FormControl sx={{width: '25ch'}}>
                                     <InputLabel id="font-family-select-label">Font Family</InputLabel>

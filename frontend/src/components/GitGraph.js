@@ -9,7 +9,9 @@ function GitGraph (props) {
         template: templateExtend(TemplateName.Metro, {
             branch: {
                 showLabel: true,
-                labelFont: "normal 12pt Arial"
+                label: {
+                    font: "normal 12pt Helvetica"
+                }
             },
             commit: {
                 dot: {
@@ -17,12 +19,12 @@ function GitGraph (props) {
                     strokeWidth: 3
                 },
                 tag: {
-                    font: "normal 12pt Arial"
+                    font: "normal 12pt Helvetica"
                 },
                 message: {
                     displayAuthor: false,
                     displayHash: false,
-                    font: "normal 13pt Arial"
+                    font: "normal 12pt Helvetica"
                 }
             }
         })
